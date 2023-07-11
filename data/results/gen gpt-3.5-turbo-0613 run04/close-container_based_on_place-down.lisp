@@ -1,0 +1,6 @@
+(<- (desig:action-grounding ?action-designator (close-container ?container-designator))
+    (spec:property ?action-designator (:type :closing))
+    (spec:property ?action-designator (:container ?container-designator))
+    (desig:current-designator ?container-designator ?current-container-designator)
+    (spec:property ?current-container-designator (:type ?container-type))
+    (spec:property ?current-container-designator (:name ?container-name)))

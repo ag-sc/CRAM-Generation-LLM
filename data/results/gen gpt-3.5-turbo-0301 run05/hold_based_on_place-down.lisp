@@ -1,0 +1,8 @@
+(<- (desig:action-grounding ?action-designator (hold ?object-designator ?arm))
+    (spec:property ?action-designator (:type :holding))
+    (-> (spec:property ?action-designator (:arm ?arm))
+        (-> (spec:property ?action-designator (:object ?object-designator))
+            (cpoe:object-in-hand ?object-designator ?arm))
+        (and (cram-robot-interfaces:robot ?robot)
+             (cram-robot-interfaces:arm ?robot ?arm)
+             (cpoe:object-in-hand ?object-designator ?arm))))

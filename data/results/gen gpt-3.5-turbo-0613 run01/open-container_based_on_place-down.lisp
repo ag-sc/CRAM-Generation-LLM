@@ -1,0 +1,8 @@
+(<- (desig:action-grounding ?action-designator (open-container ?container-designator))
+    (spec:property ?action-designator (:type :opening))
+    (spec:property ?action-designator (:container ?container-designator))
+    (desig:current-designator ?container-designator ?current-container-designator)
+    (spec:property ?current-container-designator (:type ?container-type))
+    (spec:property ?current-container-designator (:name ?container-name))
+    (obj-int:container-type-open ?container-type ?open-action)
+    (spec:property ?action-designator (:open-action ?open-action)))
