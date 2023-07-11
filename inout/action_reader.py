@@ -1,5 +1,7 @@
-import pandas as pd
 from typing import List
+
+import pandas as pd
+
 from model import Action
 
 

@@ -1,8 +1,10 @@
-import openai
 import json
 import os
-import model
+
+import openai
+
 import inout
+import model
 
 
 class OpenAIPrompter:

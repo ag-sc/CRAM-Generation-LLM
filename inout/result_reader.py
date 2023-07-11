@@ -1,7 +1,9 @@
-import pandas as pd
 import os
 import statistics
 from os.path import exists
+
+import pandas as pd
+
 from model import Action, GeneratedDesignator
 
 

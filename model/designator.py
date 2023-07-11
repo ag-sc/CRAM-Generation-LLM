@@ -1,5 +1,5 @@
-from .action import Action
 import eval as ev
+from .action import Action
 
 
 class GeneratedDesignator:
