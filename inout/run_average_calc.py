@@ -1,6 +1,6 @@
 import pandas as pd
 
-from eval import correlation
+from eval import correlation, get_dist_for_action_combination
 
 
 def calculate_average():
@@ -11,11 +11,13 @@ def calculate_average():
     df_old = average_specific_model(model_old)
     correlation.calculate_correlations(df_old, 'WuP')
     correlation.calculate_correlations(df_old, 'GloVe-Similarity')
+    correlation.calculate_correlations(df_old, 'SensorimotorDistance')
 
-    print(f'Correlations for the {model_new} model version:')
+    print(f'\nCorrelations for the {model_new} model version:')
     df_new = average_specific_model(model_new)
     correlation.calculate_correlations(df_new, 'WuP')
     correlation.calculate_correlations(df_new, 'GloVe-Similarity')
+    correlation.calculate_correlations(df_new, 'SensorimotorDistance')
 
 
 def average_specific_model(model_name: str) -> pd.DataFrame:
@@ -28,10 +30,14 @@ def average_specific_model(model_name: str) -> pd.DataFrame:
         experiment_results[x] = pd.read_csv(f'./data/results/res {model_name} run0{x + 1}.csv')
 
     avg_df = pd.DataFrame(columns=experiment_results[0].columns)
+    avg_df['SensorimotorDistance'] = ""
     for r in range(no_rows):
-        avg_df.loc[r, 'Generated'] = experiment_results[0].loc[r, 'Generated']
-        avg_df.loc[r, 'Reference'] = experiment_results[0].loc[r, 'Reference']
+        gen = experiment_results[0].loc[r, 'Generated']
+        ref = experiment_results[0].loc[r, 'Reference']
+        avg_df.loc[r, 'Generated'] = gen
+        avg_df.loc[r, 'Reference'] = ref
         avg_df.loc[r, 'WuP'] = experiment_results[0].loc[r, 'WuP']
+        avg_df.loc[r, 'SensorimotorDistance'] = get_dist_for_action_combination(ref, gen)
 
         for m in metrics:
             val = 0.0
