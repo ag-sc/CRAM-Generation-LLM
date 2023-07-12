@@ -1,8 +1,8 @@
 Name,Description,Designator,Synset,Source
-Close-Container,Closing an arbitrary container,closing_designator.lisp,close.v.02,"https://github.com/cram2/cram/tree/dcb73031ee944d04215bbff9e98b9e8c210ef6c5/cram_pr2/cram_pr2_environment_manipulation"
+Close,Closing an arbitrary container,closing_designator.lisp,close.v.02,"https://github.com/cram2/cram/tree/dcb73031ee944d04215bbff9e98b9e8c210ef6c5/cram_pr2/cram_pr2_environment_manipulation"
 Halve,Cutting an arbitrary (food) object into 2 halves,halving_designator.lisp,halve.v.01,"https://github.com/Food-Ninja/FoodCutting/blob/main/cutting_action_designator.lisp"
 Hold,Holding an object firmly in its gripper,holding_designator.lisp,hold.v.02,"https://github.com/cram2/cram/blob/bachelor-prs/cram_common/cram_mobile_cut_pour_plans/src/cut-pour-designators.lisp"
-Open-Container,Opening an arbitrary container,opening_designator.lisp,open.v.01,"https://github.com/cram2/cram/tree/dcb73031ee944d04215bbff9e98b9e8c210ef6c5/cram_pr2/cram_pr2_environment_manipulation"
+Open,Opening an arbitrary container,opening_designator.lisp,open.v.01,"https://github.com/cram2/cram/tree/dcb73031ee944d04215bbff9e98b9e8c210ef6c5/cram_pr2/cram_pr2_environment_manipulation"
 Pick-Up,Picking an object up,pick_up_designator.lisp,pick_up.v.01,"https://github.com/cram2/cram/blob/master/cram_common/cram_mobile_pick_place_plans/src/pick-place-designators.lisp"
 Place-Down,Placing the held object at a location,placing_down_designator.lisp,set_down.v.04,"https://github.com/cram2/cram/blob/master/cram_common/cram_mobile_pick_place_plans/src/pick-place-designators.lisp"
 Pour,Pouring the content of one container into another container,pouring_designator.lisp,decant.v.01,"https://github.com/cram2/cram/blob/bachelor-prs/cram_common/cram_mobile_cut_pour_plans/src/cut-pour-designators.lisp"
