@@ -5,9 +5,11 @@ generation = False
 metric_calculation = False
 output_latex_table = True
 correlation_calculation = False
-average_calculation = False
-count_and_average_lines = True
+average_calculation = True
+count_and_average_lines = False
+
 test = False
+use_new_model = True
 
 
 def generate_designators():
@@ -47,11 +49,11 @@ if __name__ == '__main__':
         calculate_metrics()
 
     if output_latex_table:
-        inout.convert_csv_to_latex_table()
+        inout.convert_csv_to_latex_table(use_new_model)
 
     if correlation_calculation:
-        eval.calculate_correlations(inout.read_results(), 'WuP')
-        eval.calculate_correlations(inout.read_results(), 'GloVe-Similarity')
+        eval.calculate_correlations(inout.read_results(use_new_model), 'WuP')
+        eval.calculate_correlations(inout.read_results(use_new_model), 'GloVe-Similarity')
 
     if average_calculation:
         inout.calculate_average()

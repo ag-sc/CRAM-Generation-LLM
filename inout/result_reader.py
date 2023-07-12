@@ -21,18 +21,22 @@ def read_designator(gen_act: Action, ref_act: Action) -> GeneratedDesignator:
     return GeneratedDesignator(ref_act, gen_act, gen_des)
 
 
-def read_results() -> pd.DataFrame:
-    # file = './data/results.csv'
-    file = './data/average results gpt-3.5-turbo-0613.csv'
+def read_results(use_new: bool) -> pd.DataFrame:
+    if use_new:
+        version = "0613"
+    else:
+        version = "0301"
+    file = f'./data/average results gpt-3.5-turbo-{version}.csv'
     return pd.read_csv(file)
 
 
-def convert_csv_to_latex_table():
-    df = read_results().sort_values(['Generated', 'Reference'])
+def convert_csv_to_latex_table(use_new: bool):
+    df = read_results(use_new).sort_values(['Generated', 'Reference'])
     for idx, row in df.iterrows():
-        print(f'{row["Generated"]} & {row["Reference"]} & & {format_float(row["WuP"])} & {format_float(row["GloVe-Similarity"])} & '
-              f'{format_float(row["BLEU"])} & {format_float(row["ROUGE-1"])} & {format_float(row["ROUGE-2"])} & '
-              f'{format_float(row["ROUGE-L"])} & {format_float(row["CodeBERTScore"])} & {format_float(row["chrF"])}\\\\')
+        print(f'{row["Generated"]} & {row["Reference"]} & & & {format_float(row["WuP"])} & {format_float(row["GloVe-Similarity"])} & '
+              f'{format_float(row["SensorimotorDistance"])} & {format_float(row["BLEU"])} & {format_float(row["ROUGE-1"])} & '
+              f'{format_float(row["ROUGE-2"])} & {format_float(row["ROUGE-L"])} & {format_float(row["CodeBERTScore"])} & '
+              f'{format_float(row["chrF"])}\\\\')
 
 
 def format_float(val: float) -> str:
