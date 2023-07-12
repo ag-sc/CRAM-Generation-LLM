@@ -1,0 +1,8 @@
+nltk~=3.8.1
+pandas~=1.5.2
+rouge~=1.0.1
+torch~=2.0.0
+torchtext~=0.15.2
+openai~=0.27.6
+code-bert-score~=0.4.1
+scipy~=1.10.0
