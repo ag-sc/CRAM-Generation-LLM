@@ -21,7 +21,7 @@ class OpenAIPrompter:
             ],
             temperature=0,
         )
-        print (response)
+        print(response)
 
     def generate_designator_gpt3(self,
                                  action: model.Action,

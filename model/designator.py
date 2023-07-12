@@ -40,7 +40,7 @@ class GeneratedDesignator:
         self.__rouge_l = ev.calculate_rouge(self.get_generated_designator(), self.get_reference_designator(), 'lcs')
         self.__code_bert_score = ev.calculate_code_bert_score(gen, ref)
         self.__chrf_score = ev.calculate_chrf(gen[0], ref[0])
-        self.__wup = GeneratedDesignator.wn_handler.calculate_wup(self.__reference_action, self.__generated_action)
+        self.__wup = GeneratedDesignator.wn_handler.calculate_wup(self.__reference_action.get_name(), self.__generated_action.get_name())
         self.__glove_cosine_sim = GeneratedDesignator.glove_handler.calculate_cosine(self.get_generated_action_name(), self.get_reference_action_name())
 
     def convert_to_dict(self) -> dict:
