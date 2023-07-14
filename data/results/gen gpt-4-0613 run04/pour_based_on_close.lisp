@@ -1,0 +1,73 @@
+(<- (desig:action-grounding ?action-designator (pour-content ?arm
+                                                            ?source-container-designator
+                                                            ?target-container-designator
+                                                            ?source-gripper-opening
+                                                            ?target-gripper-opening
+                                                            ?distance
+                                                            ?left-reach-poses
+                                                            ?right-reach-poses
+                                                            ?left-grasp-poses
+                                                            ?right-grasp-poses
+                                                            (?left-lift-pose)
+                                                            (?right-lift-pose)
+                                                            (?left-2nd-lift-pose)
+                                                            (?right-2nd-lift-pose)
+                                                            ?joint-name
+                                                            ?environment-obj))
+    (spec:property ?action-designator (:type :pouring))
+    (spec:property ?action-designator (:source ?source-container-designator))
+    (spec:property ?action-designator (:target ?target-container-designator))
+    (spec:property ?source-container-designator (:type ?source-container-type))
+    (obj-int:object-type-subtype :container ?source-container-type)
+    (spec:property ?source-container-designator (:urdf-name ?source-container-name))
+    (spec:property ?source-container-designator (:part-of ?btr-environment))
+    (spec:property ?target-container-designator (:type ?target-container-type))
+    (obj-int:object-type-subtype :container ?target-container-type)
+    (spec:property ?target-container-designator (:urdf-name ?target-container-name))
+    (spec:property ?target-container-designator (:part-of ?btr-environment))
+    (-> (spec:property ?action-designator (:arm ?arm))
+        (true)
+        (and (cram-robot-interfaces:robot ?robot)
+             (cram-robot-interfaces:arm ?robot ?arm)))
+    (spec:property ?action-designator (:distance ?distance))
+    (lisp-fun get-container-link ?source-container-name ?btr-environment ?source-container-link)
+    (lisp-fun get-connecting-joint ?source-container-link ?connecting-joint)
+    (lisp-fun cl-urdf:name ?connecting-joint ?joint-name)
+    (btr:bullet-world ?world)
+    (lisp-fun btr:object ?world ?btr-environment ?environment-obj)
+    (lisp-fun obj-int:get-object-type-gripper-opening ?source-container-type ?source-gripper-opening)
+    (lisp-fun obj-int:get-object-type-gripper-opening ?target-container-type ?target-gripper-opening)
+    (lisp-fun get-container-pose-and-transform ?source-container-name ?btr-environment
+              (?source-container-pose ?source-container-transform))
+    (lisp-fun get-container-pose-and-transform ?target-container-name ?btr-environment
+              (?target-container-pose ?target-container-transform))
+    (lisp-fun obj-int:get-object-grasping-poses ?source-container-name
+              :container-prismatic :left :close ?source-container-transform ?left-source-poses)
+    (lisp-fun obj-int:get-object-grasping-poses ?source-container-name
+              :container-prismatic :right :close ?source-container-transform ?right-source-poses)
+    (lisp-fun obj-int:get-object-grasping-poses ?target-container-name
+              :container-prismatic :left :close ?target-container-transform ?left-target-poses)
+    (lisp-fun obj-int:get-object-grasping-poses ?target-container-name
+              :container-prismatic :right :close ?target-container-transform ?right-target-poses)
+    (lisp-fun cram-mobile-pick-place-plans::extract-pick-up-manipulation-poses
+              ?arm ?left-source-poses ?right-source-poses
+              (?left-source-reach-poses ?right-source-reach-poses
+                                       ?left-source-grasp-poses ?right-source-grasp-poses
+                                       ?left-source-lift-poses ?right-source-lift-poses))
+    (lisp-fun cram-mobile-pick-place-plans::extract-pick-up-manipulation-poses
+              ?arm ?left-target-poses ?right-target-poses
+              (?left-target-reach-poses ?right-target-reach-poses
+                                       ?left-target-grasp-poses ?right-target-grasp-poses
+                                       ?left-target-lift-poses ?right-target-lift-poses))
+    (-> (lisp-pred identity ?left-source-lift-poses)
+        (equal ?left-source-lift-poses (?left-lift-pose ?left-2nd-lift-pose))
+        (equal (NIL NIL) (?left-lift-pose ?left-2nd-lift-pose)))
+    (-> (lisp-pred identity ?right-source-lift-poses)
+        (equal ?right-source-lift-poses (?right-lift-pose ?right-2nd-lift-pose))
+        (equal (NIL NIL) (?right-lift-pose ?right-2nd-lift-pose)))
+    (-> (lisp-pred identity ?left-target-lift-poses)
+        (equal ?left-target-lift-poses (?left-lift-pose ?left-2nd-lift-pose))
+        (equal (NIL NIL) (?left-lift-pose ?left-2nd-lift-pose)))
+    (-> (lisp-pred identity ?right-target-lift-poses)
+        (equal ?right-target-lift-poses (?right-lift-pose ?right-2nd-lift-pose))
+        (equal (NIL NIL) (?right-lift-pose ?right-2nd-lift-pose)))))

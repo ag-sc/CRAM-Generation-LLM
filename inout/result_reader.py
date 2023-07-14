@@ -21,17 +21,13 @@ def read_designator(gen_act: Action, ref_act: Action) -> GeneratedDesignator:
     return GeneratedDesignator(ref_act, gen_act, gen_des)
 
 
-def read_results(use_new: bool) -> pd.DataFrame:
-    if use_new:
-        version = "0613"
-    else:
-        version = "0301"
-    file = f'./data/average results gpt-3.5-turbo-{version}.csv'
+def read_results(model_to_use: str) -> pd.DataFrame:
+    file = f'./data/average results {model_to_use}.csv'
     return pd.read_csv(file)
 
 
-def convert_csv_to_latex_table(use_new: bool):
-    df = read_results(use_new).sort_values(['Generated', 'Reference'])
+def convert_csv_to_latex_table(model_to_use: str):
+    df = read_results(model_to_use).sort_values(['Generated', 'Reference'])
     for idx, row in df.iterrows():
         print(f'{row["Generated"]} & {row["Reference"]} & & & {format_float(row["WuP"])} & {format_float(row["GloVe-Similarity"])} & '
               f'{format_float(row["SensorimotorDistance"])} & {format_float(row["BLEU"])} & {format_float(row["ROUGE-1"])} & '
@@ -43,12 +39,12 @@ def format_float(val: float) -> str:
     return "%2.2f" % (val * 100)
 
 
-def count_lines_gen():
+def count_lines_gen(model_to_use: str):
     no_runs = 5
     folder = './data/results'
     lines = {}
     for x in range(no_runs):
-        directory = os.fsencode(f'{folder}/gen gpt-3.5-turbo-0613 run0{x + 1}/')
+        directory = os.fsencode(f'{folder}/gen {model_to_use} run0{x + 1}/')
         for file in os.listdir(directory):
             file_path = os.path.join(directory, file)
             if os.path.isfile(file_path):

@@ -6,6 +6,7 @@ from eval import correlation, get_dist_for_action_combination
 def calculate_average():
     model_old = "gpt-3.5-turbo-0301"
     model_new = "gpt-3.5-turbo-0613"
+    model_gpt4 = "gpt-4-0613"
 
     print(f'Correlations for the {model_old} model version:')
     df_old = average_specific_model(model_old)
@@ -18,6 +19,12 @@ def calculate_average():
     correlation.calculate_correlations(df_new, 'WuP')
     correlation.calculate_correlations(df_new, 'GloVe-Similarity')
     correlation.calculate_correlations(df_new, 'SensorimotorDistance')
+
+    print(f'\nCorrelations for the {model_gpt4} model version:')
+    df_gpt4 = average_specific_model(model_gpt4)
+    correlation.calculate_correlations(df_gpt4, 'WuP')
+    correlation.calculate_correlations(df_gpt4, 'GloVe-Similarity')
+    correlation.calculate_correlations(df_gpt4, 'SensorimotorDistance')
 
 
 def average_specific_model(model_name: str) -> pd.DataFrame:

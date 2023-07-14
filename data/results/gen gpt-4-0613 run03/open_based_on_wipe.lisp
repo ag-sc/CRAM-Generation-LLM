@@ -1,0 +1,7 @@
+(desig:designator :action ((:type :opening)
+                            (:collision-mode :stop)
+                            (:arm ?arm)
+                            (:grasp ?grasp)
+                            (:container ?container-designator)
+                            (:container-pose ?container-pose-designator))
+                  ?action-designator)

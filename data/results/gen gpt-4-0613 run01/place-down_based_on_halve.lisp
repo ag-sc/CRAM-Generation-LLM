@@ -1,0 +1,7 @@
+(desig:designator :action ((:type :place-down)
+                           (:object ?current-object-desig)
+                           (:object-name ?object-name)
+                           (:arm ?arm)
+                           (:location ?location)
+                           (:collision-mode ?collision-mode))
+                  ?resolved-action-designator))

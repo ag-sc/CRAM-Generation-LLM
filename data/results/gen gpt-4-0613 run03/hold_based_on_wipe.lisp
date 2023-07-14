@@ -1,0 +1,6 @@
+(desig:designator :action ((:type :holding)
+                            (:grasp :firm)
+                            (:collision-mode :stop)
+                            (:arm ?arm)
+                            (:object ?object-designator))
+                   ?action-designator)

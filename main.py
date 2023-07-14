@@ -7,9 +7,11 @@ output_latex_table = True
 correlation_calculation = False
 average_calculation = True
 count_and_average_lines = False
-
 test = False
-use_new_model = True
+
+#model_to_use = "gpt-3.5-turbo-0301"
+#model_to_use = "gpt-3.5-turbo-0613"
+model_to_use = "gpt-4-0613"
 
 
 def generate_designators():
@@ -21,7 +23,10 @@ def generate_designators():
             if inout.check_if_already_generated(ref_a.get_name(), gen_a.get_name()):
                 print(f'Already generated: {gen_a.get_name()} based on {ref_a.get_name()}')
                 continue
-            prompter.generate_designator_chatgpt(ref_a, gen_a)
+            if model_to_use == "gpt-4-0301":
+                prompter.generate_designator_gpt4(ref_a, gen_a)
+            else:
+                prompter.generate_designator_chatgpt(ref_a, gen_a)
 
 
 def calculate_metrics():
@@ -49,17 +54,17 @@ if __name__ == '__main__':
         calculate_metrics()
 
     if output_latex_table:
-        inout.convert_csv_to_latex_table(use_new_model)
+        inout.convert_csv_to_latex_table(model_to_use)
 
     if correlation_calculation:
-        eval.calculate_correlations(inout.read_results(use_new_model), 'WuP')
-        eval.calculate_correlations(inout.read_results(use_new_model), 'GloVe-Similarity')
+        eval.calculate_correlations(inout.read_results(model_to_use), 'WuP')
+        eval.calculate_correlations(inout.read_results(model_to_use), 'GloVe-Similarity')
 
     if average_calculation:
         inout.calculate_average()
 
     if count_and_average_lines:
-        inout.count_lines_gen()
+        inout.count_lines_gen(model_to_use)
 
     if test:
         pass

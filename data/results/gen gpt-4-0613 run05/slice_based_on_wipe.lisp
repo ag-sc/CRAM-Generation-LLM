@@ -1,0 +1,6 @@
+(desig:designator :action ((:type :slicing)
+                            (:collision-mode :stop)
+                            (:object ?object-designator)
+                            (:small-slice-pose ?small-slice-pose)
+                            (:big-slice-pose ?big-slice-pose))
+                   ?action-designator)

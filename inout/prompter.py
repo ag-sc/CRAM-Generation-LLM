@@ -69,3 +69,32 @@ class OpenAIPrompter:
         generated = model.GeneratedDesignator(action, new_action, designator)
         inout.write_designator_as_lisp(generated)
         return generated
+
+
+    def generate_designator_gpt4(self,
+                                 action: model.Action,
+                                 new_action: model.Action) -> str:
+        response = openai.ChatCompletion.create(
+            model="gpt-4",
+            messages=[
+                {"role": "system", "content": "The following LISP source code describes a CRAM designator for the "
+                                              f"action of \'{action.get_name()}\', where the executing robot would be "
+                                              f"{action.get_description()}:"},
+                {"role": "system", "content": f"{action.get_designator()}"},
+                {"role": "user", "content": "Can you please take this example and create a new designator for the "
+                                            f"action \'{new_action.get_name()}\', where the robot should be "
+                                            f"{new_action.get_description()}. Your answer should only include the"
+                                            " designator and no additional text."},
+                                            #" The designator should begin after a "
+                                            #"line only containing <desig> in a new line."},
+            ],
+            temperature=0,
+        )
+        designator = response['choices'][0]['message']['content']
+        after_tag = str(designator).split('```lisp')
+        if len(after_tag) >= 2:
+            designator = after_tag[1]
+        designator = str(designator).split("```")[0]
+        generated = model.GeneratedDesignator(action, new_action, designator)
+        inout.write_designator_as_lisp(generated)
+        return designator

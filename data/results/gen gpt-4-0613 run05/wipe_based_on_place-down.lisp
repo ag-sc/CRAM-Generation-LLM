@@ -1,0 +1,16 @@
+(<- (desig:action-grounding ?action-designator (wipe ?surface-designator ?towel-designator))
+    (spec:property ?action-designator (:type :cleaning))
+    (spec:property ?action-designator (:method :wipe))
+    (desig:current-designator ?surface-designator ?current-surface-designator)
+    (spec:property ?current-surface-designator (:type ?surface-type))
+    (spec:property ?current-surface-designator (:name ?surface-name))
+    (desig:current-designator ?towel-designator ?current-towel-designator)
+    (spec:property ?current-towel-designator (:type :towel))
+    (spec:property ?current-towel-designator (:name ?towel-name))
+    (and (lisp-fun obj-int:get-object-transform ?current-towel-designator ?towel-transform)
+         (lisp-fun obj-int:get-object-pose ?current-towel-designator ?towel-pose))
+    (and (lisp-fun obj-int:get-surface-transform ?current-surface-designator ?surface-transform)
+         (lisp-fun obj-int:get-surface-pose ?current-surface-designator ?surface-pose))
+    (lisp-fun extract-wipe-manipulation-poses ?towel-pose ?towel-transform ?surface-pose
+              ?surface-transform ?left-reach-poses ?right-reach-poses ?left-wipe-poses
+              ?right-wipe-poses ?left-retract-poses ?right-retract-poses))
