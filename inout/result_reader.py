@@ -54,6 +54,7 @@ def count_lines_gen(model_to_use: str):
                         lines[file] = []
                     lines[file].append(line_count)
 
-    for file, count in lines.items():
+    sorted_items = dict(sorted(lines.items()))
+    for file, count in sorted_items.items():
         avg = statistics.mean(count)
         print(f"File {file} has {count} lines. Average={avg}")
