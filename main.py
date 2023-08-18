@@ -1,70 +1,91 @@
-import eval
-import inout
+from eval import calculate_correlations
+from inout import ResultReader, OpenAIPrompter, import_actions, write_metrics_as_csv, calculate_averages
+from model import ModelType, ResultColumnHeaders
 
 generation = False
 metric_calculation = False
-output_latex_table = True
-correlation_calculation = False
-average_calculation = True
-count_and_average_lines = False
+output_latex_table = False
+correlation_calculation = True
+average_calculation = False
 test = False
-
-#model_to_use = "gpt-3.5-turbo-0301"
-#model_to_use = "gpt-3.5-turbo-0613"
-model_to_use = "gpt-4-0613"
 
 
 def generate_designators():
-    actions = inout.import_actions()
-    for ref_a in actions:
-        for gen_a in actions:
-            if ref_a is gen_a:
-                continue
-            if inout.check_if_already_generated(ref_a.get_name(), gen_a.get_name()):
-                print(f'Already generated: {gen_a.get_name()} based on {ref_a.get_name()}')
-                continue
-            if model_to_use == "gpt-4-0301":
-                prompter.generate_designator_gpt4(ref_a, gen_a)
-            else:
-                prompter.generate_designator_chatgpt(ref_a, gen_a)
+    actions = import_actions()
+    max_runs = 5
+    print("Starting the designator generation:")
+    for mt in ModelType:
+        reader.set_model(mt)
+        prompter.set_model(mt)
+        for r in range(1, max_runs+1):
+            reader.set_run(r)
+            prompter.set_run(r)
+            for ref_a in actions:
+                for gen_a in actions:
+                    if ref_a is gen_a:
+                        continue
+                    if reader.check_if_already_generated(ref_a.get_name(), gen_a.get_name()):
+                        print(f'Already generated: {gen_a.get_name()} based on {ref_a.get_name()} for model {mt} - run {r}')
+                        continue
+                    des = prompter.generate_designator(ref_a, gen_a)
+                    designators.append(des)
+                    print(f'Successfully generated: {gen_a.get_name()} based on {ref_a.get_name()} for model {mt} - run {r}')
+    print("Finished the designator generation")
 
 
 def calculate_metrics():
-    actions = inout.import_actions()
-    designators = []
-    c = 1
-    for ref_a in actions:
-        for gen_a in actions:
-            if ref_a is gen_a:
-                continue
-            designator = inout.read_designator(gen_a, ref_a)
-            designator.calculate_metrics()
-            designators.append(designator)
-            print(f'{c}/72 - {"%2.1f" % ((c / 72.0) * 100)}%')
+    actions = import_actions()
+    max_runs = 5
+    print("Starting the metrics calculation:")
+    if not designators:
+        c = 1
+        for mt in ModelType:
+            reader.set_model(mt)
+            for r in range(1, max_runs + 1):
+                reader.set_run(r)
+                for ref_a in actions:
+                    for gen_a in actions:
+                        if ref_a is gen_a:
+                            continue
+                        designator = reader.read_designator(gen_a, ref_a)
+                        designator.calculate_metrics()
+                        designators.append(designator)
+                        print(f'{c}/1080 - {"%2.1f" % ((c / 1080.0) * 100)}%')
+                        c += 1
+    else:
+        c = 1
+        for d in designators:
+            d.calculate_metrics()
+            print(f'{c}/1080 - {"%2.1f" % ((c / 1080.0) * 100)}%')
             c += 1
-    inout.write_metrics_as_csv(designators)
+    write_metrics_as_csv(designators)
+    print("Finished the metrics calculation")
 
 
 if __name__ == '__main__':
-    prompter = inout.OpenAIPrompter()
+    prompter = OpenAIPrompter()
+    reader = ResultReader()
+    designators = []
+
     if generation:
         generate_designators()
 
     if metric_calculation:
         calculate_metrics()
 
+    if average_calculation:
+        calculate_averages()
+
     if output_latex_table:
-        inout.convert_csv_to_latex_table(model_to_use)
+        for mt in ModelType:
+            reader.set_model(mt)
+            reader.convert_csv_to_latex_table()
 
     if correlation_calculation:
-        eval.calculate_correlations(inout.read_results(model_to_use), 'WuP')
-        eval.calculate_correlations(inout.read_results(model_to_use), 'GloVe-Similarity')
-
-    if average_calculation:
-        inout.calculate_average()
-
-    if count_and_average_lines:
-        inout.count_lines_gen(model_to_use)
+        metrics = [ResultColumnHeaders.wup, ResultColumnHeaders.glove, ResultColumnHeaders.smd]
+        for mt in ModelType:
+            for m in metrics:
+                calculate_correlations(mt, m)
 
     if test:
         pass

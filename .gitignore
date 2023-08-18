@@ -162,7 +162,6 @@ cython_debug/
 
 # Data exclusion
 /data/designators/
-/data/gen/
 
 # exclude credentials
 credentials.json

@@ -1,57 +1,42 @@
 import pandas as pd
 
-from eval import correlation, get_dist_for_action_combination
+from inout import ResultReader, import_actions
 
 
-def calculate_average():
-    model_old = "gpt-3.5-turbo-0301"
-    model_new = "gpt-3.5-turbo-0613"
-    model_gpt4 = "gpt-4-0613"
-
-    print(f'Correlations for the {model_old} model version:')
-    df_old = average_specific_model(model_old)
-    correlation.calculate_correlations(df_old, 'WuP')
-    correlation.calculate_correlations(df_old, 'GloVe-Similarity')
-    correlation.calculate_correlations(df_old, 'SensorimotorDistance')
-
-    print(f'\nCorrelations for the {model_new} model version:')
-    df_new = average_specific_model(model_new)
-    correlation.calculate_correlations(df_new, 'WuP')
-    correlation.calculate_correlations(df_new, 'GloVe-Similarity')
-    correlation.calculate_correlations(df_new, 'SensorimotorDistance')
-
-    print(f'\nCorrelations for the {model_gpt4} model version:')
-    df_gpt4 = average_specific_model(model_gpt4)
-    correlation.calculate_correlations(df_gpt4, 'WuP')
-    correlation.calculate_correlations(df_gpt4, 'GloVe-Similarity')
-    correlation.calculate_correlations(df_gpt4, 'SensorimotorDistance')
+def calculate_averages():
+    from model import ModelType
+    for mt in ModelType:
+        average_specific_model(mt)
 
 
-def average_specific_model(model_name: str) -> pd.DataFrame:
+def average_specific_model(model_name: str):
+    from model import ResultColumnHeaders
     no_runs = 5
-    no_rows = 72
-    metrics = ['GloVe-Similarity', 'BLEU', 'ROUGE-1', 'ROUGE-2', 'ROUGE-L', 'CodeBERTScore', 'chrF']
-    experiment_results = [None] * no_runs
+    metrics = [ResultColumnHeaders.wup, ResultColumnHeaders.glove, ResultColumnHeaders.smd, ResultColumnHeaders.bleu, ResultColumnHeaders.r1,
+               ResultColumnHeaders.r2, ResultColumnHeaders.rl, ResultColumnHeaders.cbs, ResultColumnHeaders.chrf, ResultColumnHeaders.loc]
+    results = ResultReader.read_all_results()
+    avg_df = pd.DataFrame(columns=metrics)
+    avg_df[ResultColumnHeaders.gen] = ""
+    avg_df[ResultColumnHeaders.ref] = ""
+    actions = import_actions()
 
-    for x in range(no_runs):
-        experiment_results[x] = pd.read_csv(f'./data/results/res {model_name} run0{x + 1}.csv')
-
-    avg_df = pd.DataFrame(columns=experiment_results[0].columns)
-    avg_df['SensorimotorDistance'] = ""
-    for r in range(no_rows):
-        gen = experiment_results[0].loc[r, 'Generated']
-        ref = experiment_results[0].loc[r, 'Reference']
-        avg_df.loc[r, 'Generated'] = gen
-        avg_df.loc[r, 'Reference'] = ref
-        avg_df.loc[r, 'WuP'] = experiment_results[0].loc[r, 'WuP']
-        avg_df.loc[r, 'SensorimotorDistance'] = get_dist_for_action_combination(ref, gen)
-
-        for m in metrics:
-            val = 0.0
-            for e in range(no_runs):
-                val += experiment_results[e].loc[r, m]
-            avg_val = val / no_runs
-            avg_df.loc[r, m] = avg_val
-
-    avg_df.to_csv(f'./data/average results {model_name}.csv')
-    return avg_df
+    row_count = 0
+    for ref_a in actions:
+        for gen_a in actions:
+            if ref_a is gen_a:
+                continue
+            ref = ref_a.get_name()
+            gen = gen_a.get_name()
+            avg_df.loc[row_count, ResultColumnHeaders.gen] = gen
+            avg_df.loc[row_count, ResultColumnHeaders.ref] = ref
+            runs = results[(results[ResultColumnHeaders.gen] == gen) & (results[ResultColumnHeaders.ref] == ref) &
+                           (results[ResultColumnHeaders.model] == model_name)]
+            assert len(runs) == no_runs
+            for m in metrics:
+                val = 0.0
+                for idx, row in runs.iterrows():
+                    val += row[m]
+                avg_val = val / no_runs
+                avg_df.loc[row_count, m] = avg_val
+            row_count += 1
+    avg_df.to_csv(f'./data/results/average results {model_name}.csv')

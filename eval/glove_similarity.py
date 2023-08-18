@@ -15,5 +15,4 @@ class GloveHandler:
         gen = self.glove[clean_up_verb(gen_act)]
         ref = self.glove[clean_up_verb(ref_act)]
         sim = torch.cosine_similarity(gen.unsqueeze(0), ref.unsqueeze(0)).item()
-        #print(f'Cosine Similarity between {gen_act} and {ref_act}: {round(sim, 3)}')
         return sim

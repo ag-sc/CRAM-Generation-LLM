@@ -1,60 +1,59 @@
-import os
-import statistics
 from os.path import exists
 
 import pandas as pd
 
-from model import Action, GeneratedDesignator
+import model
 
 
-def check_if_already_generated(action: str, new_act: str) -> bool:
-    folder = './data/gen/'
-    file = f'{folder}/{new_act.lower()}_based_on_{action.lower()}.lisp'
-    return exists(file)
+class ResultReader:
+    def __init__(self):
+        self.__model = model.ModelType.chatgpt_old
+        self.__run = 1
+        self.__folder = None
+        self.set_folder()
 
+    def set_folder(self):
+        self.__folder = f'./data/results/gen {self.__model} run0{self.__run}'
 
-def read_designator(gen_act: Action, ref_act: Action) -> GeneratedDesignator:
-    folder = './data/gen/'
-    file = f'{folder}/{gen_act.get_name().lower()}_based_on_{ref_act.get_name().lower()}.lisp'
-    with open(file, 'r') as txt_file:
-        gen_des = txt_file.read()
-    return GeneratedDesignator(ref_act, gen_act, gen_des)
+    def set_model(self, new_model: str):
+        self.__model = new_model
+        self.set_folder()
 
+    def set_run(self, run: int):
+        self.__run = run
+        self.set_folder()
 
-def read_results(model_to_use: str) -> pd.DataFrame:
-    file = f'./data/average results {model_to_use}.csv'
-    return pd.read_csv(file)
+    def check_if_already_generated(self, action: str, new_act: str) -> bool:
+        file = f'{self.__folder}/{new_act.lower()}_based_on_{action.lower()}.lisp'
+        return exists(file)
 
+    def read_designator(self, gen_act: model.Action, ref_act: model.Action) -> model.GeneratedDesignator:
+        file = f'{self.__folder}/{gen_act.get_name().lower()}_based_on_{ref_act.get_name().lower()}.lisp'
+        with open(file, 'r') as txt_file:
+            gen_des = txt_file.read()
+        return model.GeneratedDesignator(ref_act, gen_act, gen_des, self.__model, self.__run)
 
-def convert_csv_to_latex_table(model_to_use: str):
-    df = read_results(model_to_use).sort_values(['Generated', 'Reference'])
-    for idx, row in df.iterrows():
-        print(f'{row["Generated"]} & {row["Reference"]} & & & {format_float(row["WuP"])} & {format_float(row["GloVe-Similarity"])} & '
-              f'{format_float(row["SensorimotorDistance"])} & {format_float(row["BLEU"])} & {format_float(row["ROUGE-1"])} & '
-              f'{format_float(row["ROUGE-2"])} & {format_float(row["ROUGE-L"])} & {format_float(row["CodeBERTScore"])} & '
-              f'{format_float(row["chrF"])}\\\\')
+    def read_average_results(self) -> pd.DataFrame:
+        file = f'./data/results/average results {self.__model}.csv'
+        return pd.read_csv(file)
 
+    @staticmethod
+    def read_all_results() -> pd.DataFrame:
+        file = './data/all_results.csv'
+        return pd.read_csv(file)
 
-def format_float(val: float) -> str:
-    return "%2.2f" % (val * 100)
+    def convert_csv_to_latex_table(self):
+        from model import ResultColumnHeaders
+        df = self.read_average_results().sort_values([ResultColumnHeaders.gen, ResultColumnHeaders.ref])
+        print(f"Latex Table for average results of the {self.__model} model:")
+        for idx, row in df.iterrows():
+            print(f'{row[ResultColumnHeaders.gen]} & {row[ResultColumnHeaders.gen]} & {row[ResultColumnHeaders.loc]} & & '
+                  f'{ResultReader.format_float(row[ResultColumnHeaders.wup])} & {ResultReader.format_float(row[ResultColumnHeaders.glove])} & '
+                  f'{ResultReader.format_float(row[ResultColumnHeaders.smd])} & {ResultReader.format_float(row[ResultColumnHeaders.bleu])} & '
+                  f'{ResultReader.format_float(row[ResultColumnHeaders.r1])} & {ResultReader.format_float(row[ResultColumnHeaders.r2])} & '
+                  f'{ResultReader.format_float(row[ResultColumnHeaders.rl])} & {ResultReader.format_float(row[ResultColumnHeaders.cbs])} & '
+                  f'{ResultReader.format_float(row[ResultColumnHeaders.chrf])}\\\\')
 
-
-def count_lines_gen(model_to_use: str):
-    no_runs = 5
-    folder = './data/results'
-    lines = {}
-    for x in range(no_runs):
-        directory = os.fsencode(f'{folder}/gen {model_to_use} run0{x + 1}/')
-        for file in os.listdir(directory):
-            file_path = os.path.join(directory, file)
-            if os.path.isfile(file_path):
-                with open(file_path, 'r') as f:
-                    line_count = sum(1 for line in f)
-                    if file not in lines:
-                        lines[file] = []
-                    lines[file].append(line_count)
-
-    sorted_items = dict(sorted(lines.items()))
-    for file, count in sorted_items.items():
-        avg = statistics.mean(count)
-        print(f"File {file} has {count} lines. Average={avg}")
+    @staticmethod
+    def format_float(val: float) -> str:
+        return "%2.2f" % (val * 100)
