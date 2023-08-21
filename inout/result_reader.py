@@ -39,7 +39,7 @@ class ResultReader:
 
     @staticmethod
     def read_all_results() -> pd.DataFrame:
-        file = './data/all_results.csv'
+        file = './data/results/all_results.csv'
         return pd.read_csv(file)
 
     def convert_csv_to_latex_table(self):

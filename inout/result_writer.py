@@ -6,7 +6,7 @@ from model import GeneratedDesignator
 
 
 def write_metrics_as_csv(designators: List[GeneratedDesignator]):
-    file = './data/all_results.csv'
+    file = './data/results/all_results.csv'
     df = pd.DataFrame.from_records([des.convert_to_dict() for des in designators])
     df.to_csv(file)
 
