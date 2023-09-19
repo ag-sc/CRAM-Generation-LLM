@@ -1,6 +1,6 @@
-# Generation of Robot Manipulation Plans within the CRAM Framework Using Generative Large Language Models - Supplementary Material
+# Generation of Robot Manipulation Plans Using Generative Large Language Models - Supplementary Material
 
-This repository contains supplementary material to the paper "Generation of Robot Manipulation Plans within the CRAM Framework Using Generative Large Language Models" submitted to the *IEEE Robotic Computing* conference.
+This repository contains supplementary material to the paper "Generation of Robot Manipulation Plans Using Generative Large Language Models" submitted to the *IEEE Robotic Computing* conference.
 
 ## Abstract
 
