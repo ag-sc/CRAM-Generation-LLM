@@ -1,6 +1,7 @@
 # Generation of Robot Manipulation Plans Using Generative Large Language Models - Supplementary Material
 
-This repository contains supplementary material to the paper "Generation of Robot Manipulation Plans Using Generative Large Language Models" submitted to the *IEEE Robotic Computing* conference.
+This repository contains supplementary material to the paper "Generation of Robot Manipulation Plans Using Generative Large Language Models" accepted at the *Seventh IEEE International Conference on Robotic Computing (IRC)*. 
+If you want to reference this work, please cite the following paper: *tba*
 
 ## Abstract
 
