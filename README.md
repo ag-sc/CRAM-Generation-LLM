@@ -11,7 +11,7 @@ In order to evaluate the ability of LLMs to generate code representing manipulat
 In our experimental framework, we ask an LLM such as ChatGPT or GPT-4 to generate a plan for a specific target action given the plan (called designator within CRAM) for a given reference action as an example.
 We evaluate the generated designators against a ground truth designator using machine translation and code generation metrics, as well as assessing whether they compile.
 We find that GPT-4 slightly outperforms ChatGPT, but  both models achieve a solid performance above all evaluated metrics.
-However, only ~35% of the generated designators compile successfully.
+However, only ~36% of the generated designators compile successfully.
 In addition, we assess how the chosen reference action influences the code generation quality as well as the compilation success. 
 Unexpectedly, the action similarity negatively correlates with compilation success.
 With respect to the metrics, we obtain either a positive or negative correlation depending on the used model. 
@@ -44,11 +44,18 @@ To repeat the experiment reported in the paper, you need to follow the following
     "api_key": "api-key-here"
 }
 ```
-4) Remove/Move the generation results in "./data/results" since new designators are only generated when no existing ones are found
-5) Adjust the settings in the main.py
-6) Run the project & Enjoy!
+4) Adjust the settings in the main.py
+5) Run the project & Enjoy!
 
-**Remark**: Please note that the *gpt-3.5-turbo-0301* model we employed is only available until June 13th, 2024[^1]
+**Remark**: Please note that both ChatGPT models we employed (*gpt-3.5-turbo-0301* and *gpt-3.5-turbo-0613*) are only available until June 13th, 2024[^1]
+
+## Settings
+
+- *generation*: Generate the designators for all model types in the specified number of runs (default = 5)
+- *metric_calculation*: Calculate the metrics for all generated designators (1080 for 5 runs and 3 models)
+- *output_latex_table*: Format the calculated and saved metrics in a Latex table
+- *correlation_calculation*: For all models, calculate the correlation between the code generation and the action similarity metrics
+- *average_calculation*: Calculate the mean value for all metrics two times: For each action in a model and for the whole model
 
 ## Disclaimer
 
