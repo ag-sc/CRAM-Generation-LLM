@@ -7,7 +7,6 @@ metric_calculation = False
 output_latex_table = False
 correlation_calculation = True
 average_calculation = False
-test = False
 
 
 def generate_designators():
@@ -86,6 +85,3 @@ if __name__ == '__main__':
         for mt in ModelType:
             for m in metrics:
                 calculate_correlations(mt, m)
-
-    if test:
-        pass
