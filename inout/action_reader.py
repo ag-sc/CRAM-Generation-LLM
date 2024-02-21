@@ -4,6 +4,8 @@ import pandas as pd
 
 from model import Action
 
+NO_ACTIONS = 9
+
 
 def import_actions() -> List[Action]:
     csv_act = pd.read_csv('./data/actions.csv')

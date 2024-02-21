@@ -1,5 +1,7 @@
 from enum import Enum
 
+MODEL_AMOUNT = 3
+
 
 class ModelType(str, Enum):
     chatgpt_old = 'gpt-3.5-turbo-0301'

@@ -1,22 +1,23 @@
 from eval import calculate_correlations
-from inout import ResultReader, OpenAIPrompter, import_actions, write_metrics_as_csv, calculate_averages
-from model import ModelType, ResultColumnHeaders
+from inout import ResultReader, OpenAIPrompter, import_actions, write_metrics_as_csv, calculate_averages, NO_ACTIONS
+from model import ModelType, ResultColumnHeaders, MODEL_AMOUNT
 
 generation = False
 metric_calculation = False
 output_latex_table = False
 correlation_calculation = True
-average_calculation = False
+average_calculation = True
+
+MAX_RUNS = 5
 
 
 def generate_designators():
     actions = import_actions()
-    max_runs = 5
     print("Starting the designator generation:")
     for mt in ModelType:
         reader.set_model(mt)
         prompter.set_model(mt)
-        for r in range(1, max_runs+1):
+        for r in range(1, MAX_RUNS + 1):
             reader.set_run(r)
             prompter.set_run(r)
             for ref_a in actions:
@@ -34,13 +35,13 @@ def generate_designators():
 
 def calculate_metrics():
     actions = import_actions()
-    max_runs = 5
     print("Starting the metrics calculation:")
-    if not designators:
+    max_desigs = MAX_RUNS * MODEL_AMOUNT * NO_ACTIONS * (NO_ACTIONS-1)
+    if not len(designators) == max_desigs:
         c = 1
         for mt in ModelType:
             reader.set_model(mt)
-            for r in range(1, max_runs + 1):
+            for r in range(1, MAX_RUNS + 1):
                 reader.set_run(r)
                 for ref_a in actions:
                     for gen_a in actions:
@@ -49,13 +50,13 @@ def calculate_metrics():
                         designator = reader.read_designator(gen_a, ref_a)
                         designator.calculate_metrics()
                         designators.append(designator)
-                        print(f'{c}/1080 - {"%2.1f" % ((c / 1080.0) * 100)}%')
+                        print(f'{c}/{max_desigs} - {"%2.1f" % ((c / max_desigs) * 100)}%')
                         c += 1
     else:
         c = 1
         for d in designators:
             d.calculate_metrics()
-            print(f'{c}/1080 - {"%2.1f" % ((c / 1080.0) * 100)}%')
+            print(f'{c}/{max_desigs} - {"%2.1f" % ((c / max_desigs) * 100)}%')
             c += 1
     write_metrics_as_csv(designators)
     print("Finished the metrics calculation")
@@ -73,7 +74,7 @@ if __name__ == '__main__':
         calculate_metrics()
 
     if average_calculation:
-        calculate_averages()
+        calculate_averages(MAX_RUNS)
 
     if output_latex_table:
         for mt in ModelType:
