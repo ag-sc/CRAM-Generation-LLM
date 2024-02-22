@@ -11,7 +11,7 @@ In order to evaluate the ability of LLMs to generate code representing manipulat
 In our experimental framework, we ask an LLM such as ChatGPT or GPT-4 to generate a plan for a specific target action given the plan (called designator within CRAM) for a given reference action as an example.
 We evaluate the generated designators against a ground truth designator using machine translation and code generation metrics, as well as assessing whether they compile.
 We find that GPT-4 slightly outperforms ChatGPT, but  both models achieve a solid performance above all evaluated metrics.
-However, only ~36% of the generated designators compile successfully.
+However, only 35% of the generated designators compile successfully.
 In addition, we assess how the chosen reference action influences the code generation quality as well as the compilation success. 
 Unexpectedly, the action similarity negatively correlates with compilation success.
 With respect to the metrics, we obtain either a positive or negative correlation depending on the used model. 
@@ -60,7 +60,7 @@ To repeat the experiment reported in the paper, you need to follow the following
 ## Disclaimer
 
 This work was done by the [Semantic Computing Group](https://www.uni-bielefeld.de/fakultaeten/technische-fakultaet/arbeitsgruppen/semantic-computing/) at the Center for Cognitive Interaction Technology @ Bielefeld University.
-Please contact <a href="https://www.uni-bielefeld.de/fakultaeten/technische-fakultaet/arbeitsgruppen/semantic-computing/team/jan-philipp-toeberg/">Jan-Philipp Töberg</a> (jtoeberg(at)techfak(dot)uni-bielefeld(dot)de) for further information or collaboration.
+Please contact [Jan-Philipp Töberg](https://www.uni-bielefeld.de/fakultaeten/technische-fakultaet/arbeitsgruppen/semantic-computing/team/jan-philipp-toeberg) (jtoeberg(at)techfak(dot)uni-bielefeld(dot)de) for further information or collaboration.
 
 
 [^1]: https://platform.openai.com/docs/models/gpt-3-5
