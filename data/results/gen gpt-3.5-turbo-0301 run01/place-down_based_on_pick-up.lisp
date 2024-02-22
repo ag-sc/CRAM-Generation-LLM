@@ -1,27 +1,29 @@
-(<- (desig:action-grounding ?action-designator (place-object ?arm
-                                                            ?gripper-opening
-                                                            ?distance
-                                                            ?left-reach-poses
-                                                            ?right-reach-poses
-                                                            ?left-release-poses
-                                                            ?right-release-poses
-                                                            ?target-pose))
-    (spec:property ?action-designator (:type :placing))
-    (spec:property ?action-designator (:object ?held-object))
-    (spec:property ?held-object (:type ?object-type))
-    (obj-int:object-type-subtype :object ?object-type)
-    (spec:property ?held-object (:urdf-name ?object-name))
+(<- (desig:action-grounding ?action-designator (place-down ?current-object-desig ?arm
+                                                            ?gripper-opening ?effort ?release
+                                                            ?left-reach-poses ?right-reach-poses
+                                                            ?left-release-poses ?right-release-poses))
+    (spec:property ?action-designator (:type :placing-down))
+    (spec:property ?action-designator (:object ?object-designator))
+    (desig:current-designator ?object-designator ?current-object-desig)
+    (spec:property ?current-object-desig (:type ?object-type))
+    (spec:property ?current-object-desig (:name ?object-name))
     (-> (spec:property ?action-designator (:arm ?arm))
         (true)
         (and (cram-robot-interfaces:robot ?robot)
              (cram-robot-interfaces:arm ?robot ?arm)))
-    (spec:property ?action-designator (:distance ?distance))
-    (spec:property ?action-designator (:target-pose ?target-pose))
+    (lisp-fun obj-int:get-object-transform ?current-object-desig ?object-transform)
     (lisp-fun obj-int:get-object-type-gripper-opening ?object-type ?gripper-opening)
-    (lisp-fun cram-mobile-pick-place-plans::extract-place-down-manipulation-poses
-              ?arm ?left-release-poses ?right-release-poses
-              (?left-reach-poses ?right-reach-poses))
-    (-> (lisp-pred identity ?left-release-poses)
-        (equal (NIL NIL) ?left-release-poses))
-    (-> (lisp-pred identity ?right-release-poses)
-        (equal (NIL NIL) ?right-release-poses)))
+    (lisp-fun obj-int:get-object-type-gripping-effort ?object-type ?effort)
+    (-> (spec:property ?action-designator (:release ?release))
+        (true)
+        (and (lisp-fun obj-int:get-object-type-releases
+                       ?object-type ?release)
+             (member ?release ?releases)))
+    (lisp-fun obj-int:get-object-release-poses
+              ?object-name ?object-type :left ?release ?object-transform
+              ?left-release-poses)
+    (lisp-fun obj-int:get-object-release-poses
+              ?object-name ?object-type :right ?release ?object-transform
+              ?right-release-poses)
+    (lisp-fun extract-place-down-manipulation-poses ?arm ?left-release-poses ?right-release-poses
+              (?left-reach-poses ?right-reach-poses)))

@@ -1,16 +1,15 @@
-(<- (desig:action-grounding ?action-designator (hold ?arm
-                                                      ?gripper-closing
-                                                      ?distance
-                                                      ?left-hold-poses
-                                                      ?right-hold-poses
-                                                      ?joint-name))
+(<- (desig:action-grounding ?action-designator (hold ?current-object-desig ?arm
+                                                      ?gripper-closing ?effort))
     (spec:property ?action-designator (:type :holding))
+    (spec:property ?action-designator (:object ?object-designator))
+    (desig:current-designator ?object-designator ?current-object-desig)
+    (spec:property ?current-object-desig (:type ?object-type))
+    (spec:property ?current-object-desig (:name ?object-name))
     (-> (spec:property ?action-designator (:arm ?arm))
         (true)
         (and (cram-robot-interfaces:robot ?robot)
              (cram-robot-interfaces:arm ?robot ?arm)))
-    (spec:property ?action-designator (:distance ?distance))
-    (lisp-fun cram-mobile-pick-place-plans::extract-hold-manipulation-poses
-              ?arm ?left-hold-poses ?right-hold-poses)
-    (lisp-fun obj-int:get-object-type-gripper-closing ?gripper-closing)
-    (lisp-fun cram-robot-interfaces:get-gripper-joint-name ?arm ?joint-name))
+    (lisp-fun obj-int:get-object-transform ?current-object-desig ?object-transform)
+    (lisp-fun obj-int:calculate-object-faces ?object-transform (?facing-robot-face ?bottom-face))
+    (lisp-fun obj-int:get-object-type-gripping-effort ?object-type ?effort)
+    (lisp-fun obj-int:get-object-type-gripper-closing ?object-type ?gripper-closing))

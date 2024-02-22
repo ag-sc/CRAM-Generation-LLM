@@ -8,7 +8,7 @@ from model import GeneratedDesignator
 def write_metrics_as_csv(designators: List[GeneratedDesignator]):
     file = './data/results/all_results.csv'
     df = pd.DataFrame.from_records([des.convert_to_dict() for des in designators])
-    df.to_csv(file)
+    df.to_csv(file, index=False)
 
 
 def write_designator_as_lisp(designator: GeneratedDesignator, model_name: str, run: int):

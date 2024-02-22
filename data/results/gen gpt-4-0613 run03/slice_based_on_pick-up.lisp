@@ -1,37 +1,33 @@
-(<- (desig:action-grounding ?action-designator (slice ?arm
-                                                      ?gripper-opening
-                                                      ?distance
-                                                      ?left-reach-poses
-                                                      ?right-reach-poses
-                                                      ?left-grasp-poses
-                                                      ?right-grasp-poses
-                                                      ?left-lift-poses
-                                                      ?right-lift-poses
-                                                      ?joint-name ?environment-obj))
-    (spec:property ?action-designator (:type :cutting))
-    (spec:property ?action-designator (:object ?food-object))
-    (obj-int:object-type-subtype :food ?food-object)
-    (spec:property ?food-object (:urdf-name ?food-object-name))
-    (spec:property ?food-object (:part-of ?btr-environment))
-    (-> (spec:property ?action-designator (:arm ?arm))
+(<- (desig:action-grounding ?action-designator (slice ?current-object-desig ?knife
+                                                       ?cutting-board ?slice-size))
+    (spec:property ?action-designator (:type :slicing))
+    (spec:property ?action-designator (:object ?object-designator))
+    (desig:current-designator ?object-designator ?current-object-desig)
+    (spec:property ?current-object-desig (:type ?object-type))
+    (spec:property ?current-object-desig (:name ?object-name))
+    (-> (spec:property ?action-designator (:knife ?knife))
         (true)
         (and (cram-robot-interfaces:robot ?robot)
-             (cram-robot-interfaces:arm ?robot ?arm)))
-    (spec:property ?action-designator (:distance ?distance))
-    (lisp-fun get-food-object-link ?food-object-name ?btr-environment ?food-object-link)
-    (lisp-fun get-connecting-joint ?food-object-link ?connecting-joint)
-    (lisp-fun cl-urdf:name ?connecting-joint ?joint-name)
-    (btr:bullet-world ?world)
-    (lisp-fun btr:object ?world ?btr-environment ?environment-obj)
-    (lisp-fun obj-int:get-object-type-gripper-opening ?food-object ?gripper-opening)
-    (lisp-fun get-food-object-pose-and-transform ?food-object-name ?btr-environment
-              (?food-object-pose ?food-object-transform))
-    (lisp-fun obj-int:get-object-grasping-poses ?food-object-name
-              :food :left :open ?food-object-transform ?left-poses)
-    (lisp-fun obj-int:get-object-grasping-poses ?food-object-name
-              :food :right :open ?food-object-transform ?right-poses)
-    (lisp-fun cram-mobile-pick-place-plans::extract-slice-manipulation-poses
-              ?arm ?left-poses ?right-poses
-              (?left-reach-poses ?right-reach-poses
-                                 ?left-grasp-poses ?right-grasp-poses
-                                 ?left-lift-poses ?right-lift-poses)))
+             (cram-robot-interfaces:tool ?robot ?knife)))
+    (-> (spec:property ?action-designator (:cutting-board ?cutting-board))
+        (true)
+        (and (cram-robot-interfaces:robot ?robot)
+             (cram-robot-interfaces:tool ?robot ?cutting-board)))
+    (lisp-fun obj-int:get-object-transform ?current-object-desig ?object-transform)
+    (lisp-fun obj-int:calculate-object-faces ?object-transform (?top-face ?bottom-face))
+    (-> (spec:property ?action-designator (:slice-size ?slice-size))
+        (true)
+        (and (lisp-fun obj-int:get-object-size
+                       ?object-type ?object-size)
+             (lisp-fun obj-int:calculate-slice-size
+                       ?object-size ?slice-size)))
+    (lisp-fun obj-int:get-object-cutting-poses
+              ?object-name ?object-type :left ?knife ?cutting-board ?object-transform
+              ?left-poses)
+    (lisp-fun obj-int:get-object-cutting-poses
+              ?object-name ?object-type :right ?knife ?cutting-board ?object-transform
+              ?right-poses)
+    (lisp-fun extract-slice-manipulation-poses ?knife ?cutting-board ?left-poses ?right-poses
+              (?left-pre-cut-poses ?right-pre-cut-poses
+                                   ?left-cut-poses ?right-cut-poses
+                                   ?left-post-cut-poses ?right-post-cut-poses)))

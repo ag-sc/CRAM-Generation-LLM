@@ -1,40 +1,20 @@
-(<- (desig:action-grounding ?action-designator (slice ?arm
-                                                      ?gripper-opening
-                                                      ?distance
-                                                      ?left-reach-poses
-                                                      ?right-reach-poses
-                                                      ?left-grasp-poses
-                                                      ?right-grasp-poses
-                                                      ?left-cut-poses
-                                                      ?right-cut-poses
-                                                      ?joint-name ?environment-obj))
-    (spec:property ?action-designator (:type :cutting))
-    (spec:property ?action-designator (:object ?food-object))
-    (obj-int:object-type-subtype :food ?food-object)
-    (spec:property ?food-object (:urdf-name ?food-object-name))
-    (spec:property ?food-object (:part-of ?btr-environment))
-    (-> (spec:property ?action-designator (:arm ?arm))
+(<- (desig:action-grounding ?action-designator (slice ?current-object-desig ?knife ?cutting-board
+                                                      ?small-slice ?big-slice))
+    (spec:property ?action-designator (:type :slicing))
+    (spec:property ?action-designator (:object ?object-designator))
+    (desig:current-designator ?object-designator ?current-object-desig)
+    (spec:property ?current-object-desig (:type ?object-type))
+    (spec:property ?current-object-desig (:name ?object-name))
+    (-> (spec:property ?action-designator (:knife ?knife))
         (true)
         (and (cram-robot-interfaces:robot ?robot)
-             (cram-robot-interfaces:arm ?robot ?arm)))
-    (spec:property ?action-designator (:distance ?distance))
-    (lisp-fun get-food-object-link ?food-object-name ?btr-environment ?food-object-link)
-    (lisp-fun get-connecting-joint ?food-object-link ?connecting-joint)
-    (lisp-fun cl-urdf:name ?connecting-joint ?joint-name)
-    (btr:bullet-world ?world)
-    (lisp-fun btr:object ?world ?btr-environment ?environment-obj)
-    (lisp-fun obj-int:get-object-type-gripper-opening ?food-object ?gripper-opening)
-    (lisp-fun obj-int:get-object-grasping-poses ?food-object-name
-              :food :left :open ?food-object-link ?left-grasp-poses)
-    (lisp-fun obj-int:get-object-grasping-poses ?food-object-name
-              :food :right :open ?food-object-link ?right-grasp-poses)
-    (lisp-fun cram-mobile-slicing-plans::extract-slicing-poses
-              ?arm ?left-grasp-poses ?right-grasp-poses
-              (?left-reach-poses ?right-reach-poses
-                                 ?left-cut-poses ?right-cut-poses))
-    (-> (lisp-pred identity ?left-cut-poses)
-        (equal ?left-cut-poses (?small-slice-pose ?big-slice-pose))
-        (equal (NIL NIL) (?small-slice-pose ?big-slice-pose)))
-    (-> (lisp-pred identity ?right-cut-poses)
-        (equal ?right-cut-poses (?small-slice-pose ?big-slice-pose))
-        (equal (NIL NIL) (?small-slice-pose ?big-slice-pose))))
+             (cram-robot-interfaces:arm ?robot ?knife)))
+    (-> (spec:property ?action-designator (:cutting-board ?cutting-board))
+        (true)
+        (and (cram-robot-interfaces:robot ?robot)
+             (cram-robot-interfaces:arm ?robot ?cutting-board)))
+    (lisp-fun obj-int:get-object-transform ?current-object-desig ?object-transform)
+    (lisp-fun obj-int:calculate-object-faces ?object-transform (?facing-robot-face ?bottom-face))
+    (lisp-fun obj-int:get-object-type-cutting-poses ?object-type ?facing-robot-face ?bottom-face
+              ?cutting-poses)
+    (lisp-fun extract-slicing-poses ?knife ?cutting-board ?cutting-poses ?small-slice ?big-slice))

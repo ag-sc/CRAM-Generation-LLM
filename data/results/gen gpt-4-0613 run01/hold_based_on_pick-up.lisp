@@ -1,24 +1,37 @@
-(<- (desig:action-grounding ?action-designator (hold-object ?arm
-                                                            ?gripper-closing
-                                                            ?object-designator
-                                                            ?btr-environment
-                                                            ?environment-obj))
+(<- (desig:action-grounding ?action-designator (hold ?current-object-desig ?arm
+                                                      ?gripper-opening ?effort ?grasp
+                                                      ?left-reach-poses ?right-reach-poses
+                                                      ?left-grasp-poses ?right-grasp-poses
+                                                      ?left-hold-poses ?right-hold-poses))
     (spec:property ?action-designator (:type :holding))
     (spec:property ?action-designator (:object ?object-designator))
-    (spec:property ?object-designator (:type ?object-type))
-    (spec:property ?object-designator (:urdf-name ?object-name))
-    (spec:property ?object-designator (:part-of ?btr-environment))
+    (desig:current-designator ?object-designator ?current-object-desig)
+    (spec:property ?current-object-desig (:type ?object-type))
+    (spec:property ?current-object-desig (:name ?object-name))
     (-> (spec:property ?action-designator (:arm ?arm))
         (true)
         (and (cram-robot-interfaces:robot ?robot)
              (cram-robot-interfaces:arm ?robot ?arm)))
-    (btr:bullet-world ?world)
-    (lisp-fun btr:object ?world ?btr-environment ?environment-obj)
-    (lisp-fun obj-int:get-object-type-gripper-closing ?object-type ?gripper-closing)
-    (lisp-fun get-object-pose-and-transform ?object-name ?btr-environment
-              (?object-pose ?object-transform))
-    (lisp-fun obj-int:get-object-holding-poses ?object-name
-              :object-prismatic :firm ?object-transform ?holding-poses)
-    (lisp-fun cram-mobile-pick-place-plans::extract-hold-manipulation-poses
-              ?arm ?holding-poses
-              (?holding-poses)))
+    (lisp-fun obj-int:get-object-transform ?current-object-desig ?object-transform)
+    (lisp-fun obj-int:calculate-object-faces ?object-transform (?facing-robot-face ?bottom-face))
+    (-> (obj-int:object-rotationally-symmetric ?object-type)
+        (equal ?rotationally-symmetric t)
+        (equal ?rotationally-symmetric nil))
+    (-> (spec:property ?action-designator (:grasp ?grasp))
+        (true)
+        (and (lisp-fun obj-int:get-object-type-grasps
+                       ?object-type ?facing-robot-face ?bottom-face ?rotatiationally-symmetric ?arm
+                       ?grasps)
+             (member ?grasp ?grasps)))
+    (lisp-fun obj-int:get-object-type-gripping-effort ?object-type ?effort)
+    (lisp-fun obj-int:get-object-type-gripper-opening ?object-type ?gripper-opening)
+    (lisp-fun obj-int:get-object-grasping-poses
+              ?object-name ?object-type :left ?grasp ?object-transform
+              ?left-poses)
+    (lisp-fun obj-int:get-object-grasping-poses
+              ?object-name ?object-type :right ?grasp ?object-transform
+              ?right-poses)
+    (lisp-fun extract-hold-manipulation-poses ?arm ?left-poses ?right-poses
+              (?left-reach-poses ?right-reach-poses
+                                 ?left-grasp-poses ?right-grasp-poses
+                                 ?left-hold-poses ?right-hold-poses)))

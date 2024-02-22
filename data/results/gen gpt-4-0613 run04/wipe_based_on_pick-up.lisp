@@ -1,24 +1,30 @@
-(<- (desig:action-grounding ?action-designator (wipe ?arm ?towel-designator ?surface-designator))
-    (spec:property ?action-designator (:type :cleaning))
-    (spec:property ?action-designator (:object ?surface-designator))
-    (spec:property ?surface-designator (:type ?surface-type))
-    (obj-int:object-type-subtype :surface ?surface-type)
-    (spec:property ?surface-designator (:urdf-name ?surface-name))
-    (spec:property ?surface-designator (:part-of ?btr-environment))
+(<- (desig:action-grounding ?action-designator (wipe ?current-object-desig ?arm
+                                                      ?towel ?wipe-method ?wipe-effort
+                                                      ?left-wipe-poses ?right-wipe-poses))
+    (spec:property ?action-designator (:type :wiping))
+    (spec:property ?action-designator (:object ?object-designator))
+    (desig:current-designator ?object-designator ?current-object-desig)
+    (spec:property ?current-object-desig (:type ?object-type))
+    (spec:property ?current-object-desig (:name ?object-name))
     (-> (spec:property ?action-designator (:arm ?arm))
         (true)
         (and (cram-robot-interfaces:robot ?robot)
              (cram-robot-interfaces:arm ?robot ?arm)))
-    (spec:property ?action-designator (:tool ?towel-designator))
-    (spec:property ?towel-designator (:type :towel))
-    (spec:property ?towel-designator (:part-of ?btr-environment))
-    (spec:property ?towel-designator (:urdf-name ?towel-name))
-    (lisp-fun get-surface-pose-and-transform ?surface-name ?btr-environment
-              (?surface-pose ?surface-transform))
-    (lisp-fun cram-mobile-pick-place-plans::extract-wipe-manipulation-poses
-              ?arm ?surface-pose ?surface-transform
-              ?towel-name
-              (?reach-poses ?grasp-poses ?lift-poses))
-    (-> (lisp-pred identity ?lift-poses)
-        (equal ?lift-poses NIL)
-        (true)))
+    (lisp-fun obj-int:get-object-transform ?current-object-desig ?object-transform)
+    (-> (spec:property ?action-designator (:towel ?towel))
+        (true)
+        (and (lisp-fun obj-int:get-object-type-towels
+                       ?object-type ?towel)
+             (member ?towel ?towels)))
+    (-> (spec:property ?action-designator (:wipe-method ?wipe-method))
+        (true)
+        (and (lisp-fun obj-int:get-object-type-wipe-methods
+                       ?object-type ?wipe-method)
+             (member ?wipe-method ?wipe-methods)))
+    (lisp-fun obj-int:get-object-type-wiping-effort ?object-type ?wipe-effort)
+    (lisp-fun obj-int:get-object-wiping-poses
+              ?object-name ?object-type :left ?wipe-method ?object-transform
+              ?left-poses)
+    (lisp-fun obj-int:get-object-wiping-poses
+              ?object-name ?object-type :right ?wipe-method ?object-transform
+              ?right-poses))

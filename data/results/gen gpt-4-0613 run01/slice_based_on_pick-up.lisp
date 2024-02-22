@@ -1,30 +1,27 @@
-(<- (desig:action-grounding ?action-designator (slice-object ?arm
-                                                             ?knife
-                                                             ?object
-                                                             ?small-slice
-                                                             ?big-slice
-                                                             ?cutting-board
-                                                             ?environment-obj))
+(<- (desig:action-grounding ?action-designator (slice ?current-object-desig ?knife
+                                                       ?cutting-board ?small-slice-size ?big-slice-size
+                                                       ?cutting-poses))
     (spec:property ?action-designator (:type :slicing))
     (spec:property ?action-designator (:object ?object-designator))
-    (spec:property ?object-designator (:type ?object-type))
-    (obj-int:object-type-subtype :food ?object-type)
-    (spec:property ?object-designator (:urdf-name ?object-name))
-    (spec:property ?object-designator (:part-of ?btr-environment))
-    (-> (spec:property ?action-designator (:arm ?arm))
+    (desig:current-designator ?object-designator ?current-object-desig)
+    (spec:property ?current-object-desig (:type ?object-type))
+    (spec:property ?current-object-desig (:name ?object-name))
+    (-> (spec:property ?action-designator (:knife ?knife))
         (true)
         (and (cram-robot-interfaces:robot ?robot)
-             (cram-robot-interfaces:arm ?robot ?arm)))
-    (spec:property ?action-designator (:knife ?knife))
-    (spec:property ?action-designator (:cutting-board ?cutting-board))
-    (spec:property ?action-designator (:small-slice ?small-slice))
-    (spec:property ?action-designator (:big-slice ?big-slice))
-    (btr:bullet-world ?world)
-    (lisp-fun btr:object ?world ?btr-environment ?environment-obj)
-    (lisp-fun get-object-pose-and-transform ?object-name ?btr-environment
-              (?object-pose ?object-transform))
-    (lisp-fun obj-int:get-object-slicing-poses ?object-name
-              :food :left :open ?object-transform ?object-poses)
-    (lisp-fun cram-mobile-pick-place-plans::extract-slice-manipulation-poses
-              ?arm ?knife ?object-poses
-              (?small-slice ?big-slice)))
+             (cram-robot-interfaces:tool ?robot ?knife)))
+    (-> (spec:property ?action-designator (:cutting-board ?cutting-board))
+        (true)
+        (and (cram-robot-interfaces:robot ?robot)
+             (cram-robot-interfaces:tool ?robot ?cutting-board)))
+    (lisp-fun obj-int:get-object-transform ?current-object-desig ?object-transform)
+    (lisp-fun obj-int:calculate-object-faces ?object-transform (?facing-robot-face ?bottom-face))
+    (-> (spec:property ?action-designator (:small-slice-size ?small-slice-size))
+        (true)
+        (lisp-fun obj-int:get-object-slice-size ?object-type :small ?small-slice-size))
+    (-> (spec:property ?action-designator (:big-slice-size ?big-slice-size))
+        (true)
+        (lisp-fun obj-int:get-object-slice-size ?object-type :big ?big-slice-size))
+    (lisp-fun obj-int:get-object-cutting-poses
+              ?object-name ?object-type ?knife ?cutting-board ?small-slice-size ?big-slice-size
+              ?object-transform ?cutting-poses))
