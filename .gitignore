@@ -161,7 +161,7 @@ cython_debug/
 .vector_cache/
 
 # Data exclusion
-/data/designators/
+/CRAM Generation//data/designators/
 
 # exclude credentials
 credentials.json
