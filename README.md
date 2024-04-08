@@ -1,6 +1,6 @@
-# Generation of Robot Manipulation Plans Using Generative Large Language Models - Supplementary Material
+# Generation of Robot Manipulation Plans Using Generative Large Language Models
 
-This repository contains supplementary material to the paper **Generation of Robot Manipulation Plans Using Generative Large Language Models**, which won the **Best Paper Award** at the *Seventh IEEE International Conference on Robotic Computing (IRC 2023)*. 
+This repository contains supplementary material and source code for the paper **Generation of Robot Manipulation Plans Using Generative Large Language Models**, which won the **Best Paper Award** at the *Seventh IEEE International Conference on Robotic Computing (IRC 2023)*. 
 You can find the conference presentation on [Youtube](https://youtu.be/S4FzqqqdSE4?si=w3Jjj8Hyo3xS-n-v). If you want to reference this work, please cite the following paper:
 ```
 @inproceedings{Toberg2023GenerationRobot,
@@ -34,42 +34,13 @@ On the basis of our observations we conclude that the behaviour of ChatGPT is no
 
 ## Repository Structure
 ```bash
-├── data
-│   ├── results                       		# folder containing the results for each run for all 3 LLMs 
-│   ├── actions.csv                   	# overview over the 9 actions, their designators and their source location
-│   ├── compilation.csv               	# overview over the compilation results
-│   └── sensorimotor distance.csv # overview over the sensorimotor distance calculated between all 72 action combinations
-├── designator refinement             # results of the incremental refinement attempt where each file represents a single exchange with ChatGPT
-├── eval                              		# folder containing the python scripts necessary for calculating the metrics and the correlation
-├── inout                             		# folder containing the python scripts necessary for accessing (data) files
-├── model                             		# folder containing the python scripts covering the internal data representation
-├── Comparison Overview.pdf       # manual qualitative comparison of generated designators to their manually created gold standard
-└── Metrics Overview.pdf				# overview over all metrics calculated for all 72 action combinations for all 3 models
+├── CRAM Generation         # folder for the first experiment where CRAM designators are generated (based on CRAM designators)
+│   └── ...                             
+├── Designator Refinement   # results of the incremental refinement attempt where each file represents a single exchange with ChatGPT
+├── PyCRAM Generation       # folder for the second & third experiment where PyCRAM designators are generated
+│   └── ...  
+└── Supplementary Material  # folder containing additional material (presentations, explanations, etc.) as pdfs
 ```
-
-## Repeating the Experiment
-To repeat the experiment reported in the paper, you need to follow the following steps:
-1) Add the manually created reference designators to the "./data/designators" folder (Naming conventions and where to find them can be found in the actions.csv file)
-2) Create an OpenAI account with which you can access the OpenAI API
-3) Create a file called "credentials.json" in the root folder in which you save the OpenAI organization and key:
-```json
-{
-    "organization": "organization-id-here",
-    "api_key": "api-key-here"
-}
-```
-4) Adjust the settings in the main.py
-5) Run the project & Enjoy!
-
-**Remark**: Please note that both ChatGPT models we employed (*gpt-3.5-turbo-0301* and *gpt-3.5-turbo-0613*) are only available until June 13th, 2024[^1]
-
-## Settings
-
-- *generation*: Generate the designators for all model types in the specified number of runs (default = 5)
-- *metric_calculation*: Calculate the metrics for all generated designators (1080 for 5 runs and 3 models)
-- *output_latex_table*: Format the calculated and saved metrics in a Latex table
-- *correlation_calculation*: For all models, calculate the correlation between the code generation and the action similarity metrics
-- *average_calculation*: Calculate the mean value for all metrics two times: For each action in a model and for the whole model
 
 ## Disclaimer
 
