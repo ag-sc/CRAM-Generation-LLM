@@ -1,7 +1,8 @@
 # Generation of Robot Manipulation Plans Using Generative Large Language Models
 
 This repository contains supplementary material and source code for the paper **Generation of Robot Manipulation Plans Using Generative Large Language Models**, which won the **Best Paper Award** at the *Seventh IEEE International Conference on Robotic Computing (IRC 2023)*. 
-You can find the conference presentation on [Youtube](https://youtu.be/S4FzqqqdSE4?si=w3Jjj8Hyo3xS-n-v). If you want to reference this work, please cite the following paper:
+You can find the paper on [IEEEXplore](https://ieeexplore.ieee.org/document/10473591) and the conference presentation on [Youtube](https://youtu.be/S4FzqqqdSE4?si=w3Jjj8Hyo3xS-n-v).
+If you want to reference this work, please cite the following paper:
 ```
 @inproceedings{Toberg2023GenerationRobot,
   title = {Generation of {{Robot Manipulation Plans Using Generative Large Language Models}}},
