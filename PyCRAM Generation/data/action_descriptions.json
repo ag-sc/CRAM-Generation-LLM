@@ -1,0 +1,41 @@
+{
+    "transport": {
+        "1": "transport an object to a position",
+        "2": "get an object and transport it to a position using a specified arm",
+        "3": "find an object, pick it up, transport it to a target location, and place it down using a specified arm",
+        "constructor": "TransportAction(object_designator_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], arms: List[str], target_locations: List[Pose], resolver=None)"
+    },
+    "grasp": {
+        "1": "grasp an object",
+        "2": "move into a a pre-grasp position and grasp an object using a specified arm",
+        "3": "move the gripper into a pre-grasp position 10 cm before the object, open the gripper, move to the object, and close the gripper using a specified arm",
+        "constructor": "GraspAction(object_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object, ObjectPart, ObjectPart.Object], arms: List[str], resolver=None)"
+    },
+    "cut": {
+        "1": "cut an object",
+        "2": "cut an object in half (halving) or cut an object in slices (slicing) with a specified slice thickness using a tool in a specified arm using a specified grasp",
+        "3": "cut an object in half (halving) by performing a vertical slicing motion along the middle of a specified object or cut an object in slices (slicing) with a specified slice thickness by performing vertical slicing motions along the width of a specified object using a tool in a specified arm using a specified grasp",
+        "constructor": "CutAction(object_designator_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], arms: List[str], grasps: List[str], techniques: List[str], slice_thicknesses: List[float] = [0.05], resolver=None)",
+        "cram": "cut an arbitrary (food) object into one small and one big slice (slicing) or cut an arbitrary (food) object into 2 halves (halving)"
+    },
+    "mix": {
+        "1": "perform a mixing motion",
+        "2": "perform a mixing motion using a tool held in a specified arm using a specified grasp",
+        "3": "perform a counterclockwise, outward spiraling mixing motion in a bowl using a tool held in a specified arm using a specified grasp",
+        "constructor": "MixAction(object_bowl_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], arms: List[str], grasps: List[str], resolver=None)"
+    },
+    "pour": {
+        "1": "pour the contents of one object into another container",
+        "2": "get a source object, transport it to the target container's location, and pour its contents into the target container for a specified duration",
+        "3": "get a source object, transport it to the target container's location, and pour its contents into the target container for a specified duration by tilting the source object at a 90° angle, its top being located 20 cm above the target container's center",
+        "constructor": "PourAction(object_source_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], object_container_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], arms: List[str], durations: List[float], resolver=None)",
+        "cram": "pour the contents of one container into another container"
+    },
+    "wipe": {
+        "1": "wipe a rectangular area of a surface using a cloth object",
+        "2": "get a cloth object and wipe a rectangular area of a surface defined by the center, length, and width",
+        "3": "get a cloth object and wipe a rectangular part of a surface defined by the center, length, and width in a zigzag pattern with a 10 cm gap between the strips",
+        "constructor": "WipeAction(object_cloth_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], wipe_locations: List[Pose], lengths: List[float], widths: List[float], arms: List[str], resolver=None)",
+        "cram": "clean a surface using some kind of towel"
+    }
+}

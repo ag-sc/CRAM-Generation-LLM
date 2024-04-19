@@ -1,0 +1,31 @@
+Target Action,Criterion,Weight
+cut,determine cutting technique,0.15
+cut,calculate number of slices,0.15
+cut,calculate slice poses,0.4
+cut,perform cutting motions,0.3
+grasp,calculate a pre grasp pose,0.2
+grasp,pre grasp pose has appropriate offset,0.2
+grasp,move gripper to pre grasp pose,0.15
+grasp,open gripper,0.15
+grasp,move gripper to object,0.15
+grasp,close gripper,0.15
+mix,determine a trajectory,0.4
+mix,trajectory is inside bowl,0.2
+mix,follow trajectory,0.4
+pour,navigate to source object,0.1
+pour,pick up source object,0.1
+pour,navigate to target object,0.15
+pour,calculate pour pose,0.15
+pour,pour pose has appropriate offset,0.2
+pour,move source object to pour pose,0.15
+pour,peform pour for duration,0.15
+transport,navigate to object,0.3
+transport,pick up object,0.2
+transport,navigate to target location,0.3
+transport,place object down,0.2
+wipe,navigate to cloth object,0.1
+wipe,pick up cloth object,0.1
+wipe,navigate to wiping location,0.15
+wipe,calculate wiping trajectory,0.3
+wipe,follow trajectory,0.2
+wipe,reposition robot if necessary,0.15
