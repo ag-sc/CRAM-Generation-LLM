@@ -1,0 +1,13 @@
+class WipeAction(ActionDesignatorDescription):
+    class Action(ActionDesignatorDescription.Action):
+        object_cloth: ObjectDesignatorDescription.Object
+        wipe_locations: List[Pose]
+        lengths: List[float]
+        widths: List[float]
+        arm: str
+        def perform(self) -> None:
+            cloth = self.object_cloth.bullet_world_object
+            for i in range(len(self.wipe_locations)):
+                wipe_pose = self.wipe_locations[i]
+                length = self.lengths[i]
+                width = self.widths[i]
