@@ -1,0 +1,79 @@
+Warning: Generation ended unexpectedly, Reason: length
+Reference Action: transport, Target Action: wipe
+Response: # full response is not available, as it was not saved during this run
+```python
+from pycram.designator import ActionDesignatorDescription
+from pycram.designators.object_designator import ObjectDesignatorDescription, BelieveObject
+from pycram.designators.location_designator import CostmapLocation
+from pycram.designators.motion_designator import MoveTCPMotion, MoveGripperMotion
+from pycram.designators.action_designator import NavigateAction, ParkArmsAction
+from pycram.robot_descriptions import robot_description
+from pycram.enums import Arms
+from pycram.pose import Pose
+from typing import List, Union
+
+class WipeAction(ActionDesignatorDescription):
+    class Action(ActionDesignatorDescription.Action):
+        object_cloth_designator: ObjectDesignatorDescription.Object
+        wipe_locations: List[Pose]
+        lengths: List[float]
+        widths: List[float]
+        arms: List[str]
+
+        def perform(self) -> None:
+            robot_desig = BelieveObject(names=[robot_description.name])
+            ParkArmsAction.Action(Arms.BOTH).perform()
+            pickup_loc = CostmapLocation(target=self.object_cloth_designator, reachable_for=robot_desig.resolve(), reachable_arm=self.arms[0])
+            pickup_pose = None
+            for pose in pickup_loc:
+                if self.arms[0] in pose.reachable_arms:
+                    pickup_pose = pose
+                    break
+            if not pickup_pose:
+                raise ObjectUnfetchable(f"Found no pose for the robot to grasp the object: {self.object_cloth_designator} with arm: {self.arms[0]}")
+            NavigateAction([pickup_pose.pose]).resolve().perform()
+            PickUpAction.Action(self.object_cloth_designator, self.arms[0], "top").perform()
+            ParkArmsAction.Action(Arms.BOTH).perform()
+
+            for i, loc in enumerate(self.wipe_locations):
+                NavigateAction([loc]).resolve().perform()
+                MoveTCPMotion.Action(loc, self.arms[0]).perform()
+                MoveGripperMotion.Action("open", self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1], loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + self.widths[i], loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + self.widths[i], loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + self.widths[i] + 0.1, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + self.widths[i] + 0.1, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 2 * self.widths[i] + 0.1, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 2 * self.widths[i] + 0.1, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 2 * self.widths[i] + 0.2, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 2 * self.widths[i] + 0.2, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 3 * self.widths[i] + 0.2, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 3 * self.widths[i] + 0.2, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 3 * self.widths[i] + 0.3, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 3 * self.widths[i] + 0.3, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 4 * self.widths[i] + 0.3, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 4 * self.widths[i] + 0.3, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 4 * self.widths[i] + 0.4, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 4 * self.widths[i] + 0.4, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 5 * self.widths[i] + 0.4, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 5 * self.widths[i] + 0.4, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 5 * self.widths[i] + 0.5, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 5 * self.widths[i] + 0.5, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 6 * self.widths[i] + 0.5, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 6 * self.widths[i] + 0.5, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 6 * self.widths[i] + 0.6, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 6 * self.widths[i] + 0.6, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 7 * self.widths[i] + 0.6, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 7 * self.widths[i] + 0.6, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 7 * self.widths[i] + 0.7, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 7 * self.widths[i] + 0.7, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 8 * self.widths[i] + 0.7, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 8 * self.widths[i] + 0.7, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 8 * self.widths[i] + 0.8, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 8 * self.widths[i] + 0.8, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 9 * self.widths[i] + 0.8, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 9 * self.widths[i] + 0.8, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0], loc.position[1] + 9 * self.widths[i] + 0.9, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 9 * self.widths[i] + 0.9, loc.position[2]], orientation=loc.orientation), self.arms[0]).perform()
+                MoveTCPMotion.Action(Pose(position=[loc.position[0] + self.lengths[i], loc.position[1] + 10
