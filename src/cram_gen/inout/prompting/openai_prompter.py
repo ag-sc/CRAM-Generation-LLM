@@ -2,7 +2,7 @@ import json
 
 from openai import OpenAI
 
-from src.cram_gen.inout.prompting.prompter import Prompter
+from .prompter import Prompter
 from src.cram_gen.inout.prompting.prompts import system_prompt, user_prompt
 from src.cram_gen.model import Action, GeneratedDesignator, OpenAIModels
 from src.cram_gen.utils.paths import OPENAI_CREDENTIALS

@@ -3,7 +3,7 @@ import re
 import torch
 import transformers
 
-from src.cram_gen.inout.prompting import Prompter
+from .prompter import Prompter
 from src.cram_gen.inout.prompting.prompts import system_prompt, user_prompt
 from src.cram_gen.model import Action, GeneratedDesignator
 from src.cram_gen.model import OpenSourceModels
