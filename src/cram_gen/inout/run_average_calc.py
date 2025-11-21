@@ -1,12 +1,13 @@
+from typing import List
+
 import pandas as pd
 
 from src.cram_gen.inout import ResultReader, import_actions, NO_ACTIONS
 from src.cram_gen.utils.paths import CRAM_GEN_FOLDER
 
 
-def calculate_averages(runs: int):
-    from src.cram_gen.model import ALL_MODELS
-    for mt in ALL_MODELS:
+def calculate_averages(runs: int, models: List[str]):
+    for mt in models:
         average_model_action_specific(mt, runs)
         average_whole_model(mt, runs)
 
