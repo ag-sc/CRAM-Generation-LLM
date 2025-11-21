@@ -1,6 +1,10 @@
 from eval import calculate_correlations
-from inout import ResultReader, OpenAIPrompter, import_actions, write_metrics_as_csv, calculate_averages, NO_ACTIONS
-from model import ModelType, ResultColumnHeaders, MODEL_AMOUNT
+from inout import ResultReader, import_actions, write_metrics_as_csv, calculate_averages
+from model import ALL_MODELS, ResultColumnHeaders
+from src.cram_gen.inout.prompting import Prompter, OpenAIPrompter
+from src.cram_gen.inout.prompting.gemma_prompter import GemmaPrompter
+from src.cram_gen.inout.prompting.llama_prompter import LlamaPrompter
+from src.cram_gen.model import OpenAIModels, OpenSourceModels
 
 generation = False
 metric_calculation = True
@@ -11,15 +15,25 @@ average_calculation = True
 MAX_RUNS = 5
 
 
+def choose_prompter(model_type) -> Prompter:
+    if model_type in [model.value for model in OpenAIModels]:
+        return OpenAIPrompter(model_type)
+    else:
+        if model_type == OpenSourceModels.LLAMA:
+            return LlamaPrompter()
+        else:
+            return GemmaPrompter()
+
+
 def generate_designators():
     actions = import_actions()
     print("Starting the designator generation:")
-    for mt in ModelType:
+    for mt in ALL_MODELS:
         reader.set_model(mt)
-        prompter.set_model(mt)
+        prompter = choose_prompter(mt)
         for r in range(1, MAX_RUNS + 1):
             reader.set_run(r)
-            prompter.set_run(r)
+            prompter.set_run_number(r)
             for ref_a in actions:
                 for gen_a in actions:
                     if ref_a is gen_a:
@@ -36,34 +50,25 @@ def generate_designators():
 def calculate_metrics():
     actions = import_actions()
     print("Starting the metrics calculation:")
-    max_desigs = MAX_RUNS * MODEL_AMOUNT * NO_ACTIONS * (NO_ACTIONS-1)
-    if not len(designators) == max_desigs:
-        c = 1
-        for mt in ModelType:
-            reader.set_model(mt)
-            for r in range(1, MAX_RUNS + 1):
-                reader.set_run(r)
-                for ref_a in actions:
-                    for gen_a in actions:
-                        if ref_a is gen_a:
-                            continue
-                        designator = reader.read_designator(gen_a, ref_a)
-                        designator.calculate_metrics()
-                        designators.append(designator)
-                        print(f'{c}/{max_desigs} - {"%2.1f" % ((c / max_desigs) * 100)}%')
-                        c += 1
+    for mt in ALL_MODELS:
+        reader.set_model(mt)
+        for r in range(1, MAX_RUNS + 1):
+            reader.set_run(r)
+            for ref_a in actions:
+                for gen_a in actions:
+                    if ref_a is gen_a:
+                        continue
+                    designator = reader.read_designator(gen_a, ref_a)
+                    designator.calculate_metrics()
+                    designators.append(designator)
     else:
-        c = 1
         for d in designators:
             d.calculate_metrics()
-            print(f'{c}/{max_desigs} - {"%2.1f" % ((c / max_desigs) * 100)}%')
-            c += 1
     write_metrics_as_csv(designators)
     print("Finished the metrics calculation")
 
 
 if __name__ == '__main__':
-    prompter = OpenAIPrompter()
     reader = ResultReader()
     designators = []
 
@@ -77,12 +82,12 @@ if __name__ == '__main__':
         calculate_averages(MAX_RUNS)
 
     if output_latex_table:
-        for mt in ModelType:
+        for mt in ALL_MODELS:
             reader.set_model(mt)
             reader.convert_csv_to_latex_table()
 
     if correlation_calculation:
         metrics = [ResultColumnHeaders.wup, ResultColumnHeaders.glove, ResultColumnHeaders.smd]
-        for mt in ModelType:
+        for mt in ALL_MODELS:
             for m in metrics:
                 calculate_correlations(mt, m)

@@ -1,9 +1,14 @@
 from enum import Enum
 
-MODEL_AMOUNT = 3
+class OpenAIModels(str, Enum):
+    # Model types from original experiments
+    CHATGPT_OLD = 'gpt-3.5-turbo-0301'
+    CHATGPT_NEW = 'gpt-3.5-turbo-0613'
+    GPT4_OLD = "gpt-4-0613"
 
+class OpenSourceModels(str, Enum):
+    # Model types for open source experiments
+    LLAMA = "Llama-3.3-70B-Instruct"
+    GEMMA = "gemma-2-27b-it"
 
-class ModelType(str, Enum):
-    chatgpt_old = 'gpt-3.5-turbo-0301'
-    chatgpt_new = 'gpt-3.5-turbo-0613'
-    gpt4 = "gpt-4-0613"
+ALL_MODELS = [model.value for model in OpenAIModels] + [model.value for model in OpenSourceModels]

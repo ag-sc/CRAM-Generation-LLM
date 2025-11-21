@@ -1,0 +1,2 @@
+system_prompt = "The following LISP source code describes a CRAM designator for the action of \'{action_name}\', where the executing robot would be {action_description}: {designator}"
+user_prompt = "Can you please take this example and create a new designator for the action \'{action_name}\', where the robot should be {action_description}. Your answer should only include the designator and no additional text."

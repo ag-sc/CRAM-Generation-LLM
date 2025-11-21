@@ -2,13 +2,13 @@ from os.path import exists
 
 import pandas as pd
 
-from src.cram_gen.model import ModelType, GeneratedDesignator, Action
+from src.cram_gen.model import OpenAIModels, GeneratedDesignator, Action
 from src.cram_gen.utils.paths import ALL_RESULTS_FILE, CRAM_GEN_FOLDER
 
 
 class ResultReader:
     def __init__(self):
-        self.__model = ModelType.chatgpt_old
+        self.__model = OpenAIModels.CHATGPT_OLD
         self.__run = 1
         self.__folder = None
         self.set_folder()

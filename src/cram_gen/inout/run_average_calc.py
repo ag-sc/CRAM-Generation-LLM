@@ -5,8 +5,8 @@ from src.cram_gen.utils.paths import CRAM_GEN_FOLDER
 
 
 def calculate_averages(runs: int):
-    from src.cram_gen.model import ModelType
-    for mt in ModelType:
+    from src.cram_gen.model import ALL_MODELS
+    for mt in ALL_MODELS:
         average_model_action_specific(mt, runs)
         average_whole_model(mt, runs)
 
