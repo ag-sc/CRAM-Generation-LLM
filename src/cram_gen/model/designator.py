@@ -49,7 +49,7 @@ class GeneratedDesignator:
         self.__code_bert_score = calculate_code_bert_score(gen, ref)
         self.__chrf_score = calculate_chrf(gen[0], ref[0])
 
-        self.__wup = GeneratedDesignator.wn_handler.calculate_wup(self.__reference_action.get_name(), self.__generated_action.get_name())
+        self.__wup = GeneratedDesignator.wn_handler.get_wup_sim(self.__reference_action.get_name(), self.__generated_action.get_name())
         self.__glove_cosine_sim = GeneratedDesignator.glove_handler.calculate_cosine(self.get_generated_action_name(), self.get_reference_action_name())
         self.__sensorimotor = get_dist_for_action_combination(self.__reference_action.get_name(), self.__generated_action.get_name())
         self.__compiles = get_compilation_results(self.__reference_action.get_name(), self.__generated_action.get_name(), self.__model, self.__run)
