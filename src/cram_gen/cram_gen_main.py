@@ -3,13 +3,10 @@ from typing import List
 
 from tqdm import tqdm
 
-from eval import calculate_correlations
-from inout import ResultReader, import_actions, write_metrics_as_csv, calculate_averages
-from model import ALL_MODELS, ResultColumnHeaders
-from src.cram_gen.inout.prompting import Prompter, OpenAIPrompter
-from src.cram_gen.inout.prompting.gemma_prompter import GemmaPrompter
-from src.cram_gen.inout.prompting.llama_prompter import LlamaPrompter
-from src.cram_gen.model import OpenAIModels, OpenSourceModels
+from src.cram_gen.eval import calculate_correlations
+from src.cram_gen.inout import ResultReader, import_actions, write_metrics_as_csv, calculate_averages
+from src.cram_gen.inout.prompting import Prompter, OpenAIPrompter, GemmaPrompter, LlamaPrompter
+from src.cram_gen.model import ALL_MODELS, ResultColumnHeaders, OpenAIModels, OpenSourceModels
 
 MAX_RUNS = 5
 
