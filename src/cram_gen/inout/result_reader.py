@@ -17,7 +17,7 @@ class ResultReader:
         self.__folder = CRAM_GEN_FOLDER / f'gen {self.__model} run0{self.__run}'
 
     def set_model(self, new_model: str):
-        self.__model = new_model
+        self.__model = new_model.lower()
         self.set_folder()
 
     def set_run(self, run: int):

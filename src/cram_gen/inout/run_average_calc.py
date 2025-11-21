@@ -40,7 +40,7 @@ def average_model_action_specific(model_name: str, runs: int):
                 avg_val = val / runs
                 avg_df.loc[row_count, m] = avg_val
             row_count += 1
-    file = CRAM_GEN_FOLDER / f'average action results {model_name}.csv'
+    file = CRAM_GEN_FOLDER / f'average action results {model_name.lower()}.csv'
     avg_df.to_csv(file)
 
 
@@ -60,5 +60,5 @@ def average_whole_model(model_name: str, runs: int):
             val += row[m]
         avg_val = val / no_desigs
         avg_df.loc[0, m] = avg_val
-    file = CRAM_GEN_FOLDER / f'average results {model_name}.csv'
+    file = CRAM_GEN_FOLDER / f'average results {model_name.lower()}.csv'
     avg_df.to_csv(file)
