@@ -67,7 +67,7 @@ if __name__ == '__main__':
     designators = []
 
     parser = argparse.ArgumentParser(description='One-Shot Prompting experiment for generating CRAM manipulation plans')
-    parser.add_argument("--models", type=str, choices=["all", "openai", "open_source"], nargs=1,
+    parser.add_argument("--models", type=str, choices=["all", "openai", "open_source", "llama", "gemma"], nargs=1,
                         help="Choose for which group of models plans should be generated")
     parser.add_argument("--steps", type=str, choices=["all", "gen", "metrics", "avg", "corr", "ltx_tab"], nargs="+",
                         help="Choose one or more steps to perform")
@@ -77,6 +77,10 @@ if __name__ == '__main__':
         models = OpenAIModels
     elif "open_source" in args.models:
         models = OpenSourceModels
+    elif "llama" in args.models:
+        models = [OpenSourceModels.LLAMA]
+    elif "gemma" in args.models:
+        models = [OpenSourceModels.GEMMA]
     else:
         models = ALL_MODELS
 
