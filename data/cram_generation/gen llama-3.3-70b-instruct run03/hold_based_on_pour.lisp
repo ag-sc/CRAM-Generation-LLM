@@ -1,0 +1,33 @@
+(<- (desig:action-grounding?action-designator (hold?resolved-action-designator))
+    (spec:property?action-designator (:type :holding))
+    (spec:property?action-designator (:object?object-designator))
+    (desig:current-designator?object-designator?current-object-desig)
+    (spec:property?current-object-desig (:type?object-type))
+    (spec:property?current-object-desig (:name?object-name))
+    (-> (spec:property?action-designator (:arms?arms))
+        (true)
+        (and (man-int:robot-free-hand?_?arm)
+             (equal?arms (?arm))))
+    (lisp-fun man-int:get-object-transform?current-object-desig?object-transform)
+    (-> (spec:property?action-designator (:grasp?grasp))
+        (true)
+        (and (member?arm?arms)
+             (lisp-fun man-int:get-action-grasps?object-type?arm?object-transform?grasps)
+             (member?grasp?grasps)))
+    (lisp-fun man-int:get-action-gripping-effort?object-type?effort)
+    (lisp-fun man-int:get-action-gripper-opening?object-type?gripper-opening)
+    (equal?objects (?current-object-desig))
+    (-> (member :left?arms)
+        (and (lisp-fun man-int:get-action-trajectory :holding :left?grasp T?objects
+                      ?left-holding-pose)
+             (lisp-fun man-int:get-traj-poses-by-label?left-holding-pose :approach
+                      ?left-approach-poses)
+             (lisp-fun man-int:get-traj-poses-by-label?left-holding-pose :retract
+                      ?left-retract-poses))
+        (and (equal?left-approach-poses NIL)
+             (equal?left-retract-poses NIL)))
+     (-> (member :right?arms)
+        (and (lisp-fun man-int:get-action-trajectory :holding :right?grasp T?objects
+                      ?right-holding-pose)
+             (lisp-fun man-int:get-traj-poses-by-label?right-holding-pose :approach
+                      ?right-approach-poses)

@@ -1,0 +1,31 @@
+(<- (desig:action-grounding?action-designator (pick-up?resolved-action-designator))
+    (spec:property?action-designator (:type :picking-up))
+    (spec:property?action-designator (:object?object-designator))
+    (desig:current-designator?object-designator?current-object-desig)
+    (spec:property?current-object-desig (:type?object-type))
+    (spec:property?current-object-desig (:name?object-name))
+    (-> (spec:property?action-designator (:arm?arm))
+        (true)
+        (man-int:robot-free-hand?_?arm))
+    (lisp-fun man-int:get-object-old-transform?current-object-desig?object-transform)
+    (lisp-fun man-int:calculate-object-faces?object-transform (?facing-robot-face?bottom-face))
+    (-> (spec:property?action-designator (:grasp?grasp))
+        (true)
+        (and (lisp-fun man-int:get-action-grasps?object-type?arm?object-transform?grasps)
+             (member?grasp?grasps)))
+    (lisp-fun man-int:get-action-gripping-effort?object-type?effort)
+    (lisp-fun man-int:get-action-gripper-opening?object-type?gripper-opening)
+    (equal?objects (?current-object-desig))
+    (-> (equal?arm :left)
+        (and (lisp-fun man-int:get-action-trajectory :picking-up?arm?grasp T?objects
+                      ?left-picking-up-pose)
+             (lisp-fun man-int:get-traj-poses-by-label?left-picking-up-pose :pick-up
+                      ?left-pick-up-poses))
+        (and (equal?left-pick-up-poses NIL)
+             (equal?left-pick-up-poses?left-pick-up-poses)))
+    (-> (equal?arm :right)
+        (and (lisp-fun man-int:get-action-trajectory :picking-up?arm?grasp T?objects
+                      ?right-picking-up-pose)
+             (lisp-fun man-int:get-traj-poses-by-label?right-picking-up-pose :pick-up
+                      ?right-pick-up-poses))
+        (and(equal?right-p
