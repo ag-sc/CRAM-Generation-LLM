@@ -8,7 +8,7 @@ from src.cram_gen.model import OpenSourceModels
 
 
 class LlamaPrompter(Prompter):
-    def __init__(self, max_new_tokens=500):
+    def __init__(self, max_new_tokens=2500):
         super().__init__(OpenSourceModels.LLAMA)
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(f'meta-llama/{self._model_name}')
         self.tokenizer.pad_token_id = self.tokenizer.eos_token_id  # for open-ended generation
