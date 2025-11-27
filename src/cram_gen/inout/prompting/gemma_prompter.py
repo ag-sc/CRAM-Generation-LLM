@@ -10,7 +10,7 @@ from src.cram_gen.model import OpenSourceModels
 
 
 class GemmaPrompter(Prompter):
-    def __init__(self, max_new_tokens=500):
+    def __init__(self, max_new_tokens=2500):
         super().__init__(OpenSourceModels.GEMMA)
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(f'google/{self._model_name}')
         self.model = transformers.AutoModelForCausalLM.from_pretrained(
