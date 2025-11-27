@@ -1,0 +1,6 @@
+(<- (desig:action-grounding ?action-designator (close ?container-designator ?arm))
+    (spec:property ?action-designator (:type :closing))
+    (-> (spec:property ?action-designator (:container ?container-designator))
+        (cram-object-interfaces:container ?container-designator))
+    (-> (spec:property ?action-designator (:arm ?arm))
+        (cram-robot-interfaces:arm ?robot ?arm)))

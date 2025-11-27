@@ -1,0 +1,15 @@
+(<- (desig:action-grounding ?action-designator (close ?container-desig ?arm ?effort))
+    (spec:property ?action-designator (:type :closing))
+    (spec:property ?action-designator (:container ?container-designator))
+    (desig:current-designator ?container-designator ?current-container-desig)
+    (spec:property ?current-container-desig (:type ?container-type))
+    (spec:property ?current-container-desig (:name ?container-name))
+    (-> (spec:property ?action-designator (:arm ?arm))
+        (true)
+        (and (cram-robot-interfaces:robot ?robot)
+             (cram-robot-interfaces:arm ?robot ?arm)))
+    (lisp-fun obj-int:get-object-transform ?current-container-desig ?container-transform)
+    (lisp-fun obj-int:get-object-type-closing-effort ?container-type ?effort)
+    (lisp-fun obj-int:get-object-closing-poses
+              ?container-name ?container-type ?arm ?container-transform
+              ?reach-poses ?grasp-poses ?close-poses))
