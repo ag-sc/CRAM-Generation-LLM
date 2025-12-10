@@ -40,14 +40,26 @@ class GeneratedDesignator:
     def calculate_metrics(self):
         from src.cram_gen.inout import get_dist_for_action_combination, get_compilation_results
 
-        ref = [self.get_reference_designator()]
-        gen = [self.get_generated_designator()] * len(ref)
-        self.__bleu_score = calculate_bleu(self.get_generated_designator(), self.get_reference_designator())
-        self.__rouge_1 = calculate_rouge(self.get_generated_designator(), self.get_reference_designator(), '1')
-        self.__rouge_2 = calculate_rouge(self.get_generated_designator(), self.get_reference_designator(), '2')
-        self.__rouge_l = calculate_rouge(self.get_generated_designator(), self.get_reference_designator(), 'lcs')
-        self.__code_bert_score = calculate_code_bert_score(gen, ref)
-        self.__chrf_score = calculate_chrf(gen[0], ref[0])
+        ref_designator = self.get_reference_designator()
+        gen_designator = self.get_generated_designator()
+
+        if not ref_designator or not gen_designator:
+            self.__bleu_score = 0
+            self.__rouge_1 = 0
+            self.__rouge_2 = 0
+            self.__rouge_l = 0
+            self.__code_bert_score = 0
+            self.__chrf_score = 0
+        else:
+            ref = [ref_designator]
+            gen = [gen_designator] * len(ref)
+
+            self.__bleu_score = calculate_bleu(gen_designator, ref_designator)
+            self.__rouge_1 = calculate_rouge(gen_designator, ref_designator, '1')
+            self.__rouge_2 = calculate_rouge(gen_designator, ref_designator, '2')
+            self.__rouge_l = calculate_rouge(gen_designator, ref_designator, 'lcs')
+            self.__code_bert_score = calculate_code_bert_score(gen, ref)
+            self.__chrf_score = calculate_chrf(gen[0], ref[0])
 
         self.__wup = GeneratedDesignator.wn_handler.get_wup_sim(self.__reference_action.get_name(), self.__generated_action.get_name())
         self.__glove_cosine_sim = GeneratedDesignator.glove_handler.calculate_cosine(self.get_generated_action_name(), self.get_reference_action_name())
