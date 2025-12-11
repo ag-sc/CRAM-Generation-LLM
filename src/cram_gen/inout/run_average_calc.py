@@ -36,7 +36,7 @@ def average_model_action_specific(model_name: str, runs: int):
             avg_df.loc[row_count, ResultColumnHeaders.gen] = gen
             avg_df.loc[row_count, ResultColumnHeaders.ref] = ref
             runs_df = results[(results[ResultColumnHeaders.gen] == gen) & (results[ResultColumnHeaders.ref] == ref) &
-                              (results[ResultColumnHeaders.model] == model_name)]
+                              (results[ResultColumnHeaders.model] == model_name.value.lower())]
             assert runs_df.shape[0] == runs
             for m in metrics:
                 val = 0.0
@@ -57,7 +57,7 @@ def average_whole_model(model_name: str, runs: int):
     results = ResultReader.read_all_results()
     avg_df = pd.DataFrame(columns=metrics)
 
-    model_results = results[results[ResultColumnHeaders.model] == model_name]
+    model_results = results[results[ResultColumnHeaders.model] == model_name.value.lower()]
     assert len(model_results) == no_desigs
     for m in metrics:
         avg_val = model_results[m].sum() / no_desigs

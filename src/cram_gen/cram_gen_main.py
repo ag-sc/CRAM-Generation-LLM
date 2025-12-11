@@ -56,9 +56,6 @@ def calculate_metrics(models: List[str]):
                     designator = reader.read_designator(gen_a, ref_a)
                     designator.calculate_metrics()
                     designators.append(designator)
-    else:
-        for d in designators:
-            d.calculate_metrics()
     write_metrics_as_csv(designators)
     print("\n-----\nEND STEP 2: METRIC CALCULATION\n")
 
