@@ -1,3 +1,5 @@
+import torch
+
 from src.cram_gen.eval import WordNetHandler, GloveHandler, calculate_bleu, calculate_rouge, calculate_code_bert_score, \
     calculate_chrf
 from .action import Action
@@ -45,10 +47,10 @@ class GeneratedDesignator:
 
         if not ref_designator or not gen_designator:
             self.__bleu_score = 0
-            self.__rouge_1 = 0
-            self.__rouge_2 = 0
-            self.__rouge_l = 0
-            self.__code_bert_score = 0
+            self.__rouge_1 = {"p": 0.0, "r": 0.0, "f": 0.0}
+            self.__rouge_2 = {"p": 0.0, "r": 0.0, "f": 0.0}
+            self.__rouge_l = {"p": 0.0, "r": 0.0, "f": 0.0}
+            self.__code_bert_score = [torch.tensor(0.0), torch.tensor(0.0), torch.tensor(0.0)]
             self.__chrf_score = 0
         else:
             ref = [ref_designator]
