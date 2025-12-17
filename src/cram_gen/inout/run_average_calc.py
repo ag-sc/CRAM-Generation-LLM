@@ -36,7 +36,7 @@ def average_model_action_specific(model_name: str, runs: int):
             avg_df.loc[row_count, ResultColumnHeaders.gen] = gen
             avg_df.loc[row_count, ResultColumnHeaders.ref] = ref
             runs_df = results[(results[ResultColumnHeaders.gen] == gen) & (results[ResultColumnHeaders.ref] == ref) &
-                              (results[ResultColumnHeaders.model] == model_name.value.lower())]
+                              (results[ResultColumnHeaders.model] == model_name.lower())]
             assert runs_df.shape[0] == runs
             for m in metrics:
                 val = 0.0
@@ -57,11 +57,11 @@ def average_whole_model(model_name: str, runs: int):
     results = ResultReader.read_all_results()
     avg_df = pd.DataFrame(columns=metrics)
 
-    model_results = results[results[ResultColumnHeaders.model] == model_name.value.lower()]
+    model_results = results[results[ResultColumnHeaders.model] == model_name.lower()]
     assert len(model_results) == no_desigs
     for m in metrics:
         avg_val = model_results[m].sum() / no_desigs
         avg_df.loc[0, m] = avg_val
-    avg_df.insert(0, 'model', model_name)
+    avg_df.insert(0, 'model', model_name.lower())
     write_header = not os.path.exists(AVERAGE_RESULTS_FILE) or os.path.getsize(AVERAGE_RESULTS_FILE) == 0
     avg_df.to_csv(AVERAGE_RESULTS_FILE, mode='a', header=write_header, index=False)

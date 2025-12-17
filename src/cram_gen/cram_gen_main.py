@@ -71,13 +71,13 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     if "openai" in args.models:
-        models = OpenAIModels
+        models = [m.value for m in OpenAIModels]
     elif "open_source" in args.models:
-        models = OpenSourceModels
+        models = [m.value for m in OpenSourceModels]
     elif "llama" in args.models:
-        models = [OpenSourceModels.LLAMA]
+        models = [OpenSourceModels.LLAMA.value]
     elif "gemma" in args.models:
-        models = [OpenSourceModels.GEMMA]
+        models = [OpenSourceModels.GEMMA.value]
     else:
         models = ALL_MODELS
 
