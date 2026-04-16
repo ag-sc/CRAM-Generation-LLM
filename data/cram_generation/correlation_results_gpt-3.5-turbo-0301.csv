@@ -1,0 +1,4 @@
+metric,BLEU_r,BLEU_p,ROUGE-1_r,ROUGE-1_p,ROUGE-2_r,ROUGE-2_p,ROUGE-L_r,ROUGE-L_p,CodeBERTScore_r,CodeBERTScore_p,chrF_r,chrF_p,LoC_r,LoC_p,Compilation_r,Compilation_p
+WuP,-0.212,5e-05,-0.074,0.1592,-0.142,0.00705,-0.071,0.18,-0.075,0.15558,-0.17,0.00121,-0.242,0.0,-0.278,0.0
+GloVe-Similarity,-0.278,0.0,-0.274,0.0,-0.272,0.0,-0.27,0.0,-0.244,0.0,-0.278,0.0,-0.29,0.0,-0.166,0.00155
+Sensorimotor Distance,-0.072,0.17569,-0.209,6e-05,-0.265,0.0,-0.217,3e-05,-0.105,0.04629,-0.099,0.06095,-0.077,0.1425,0.007,0.89769

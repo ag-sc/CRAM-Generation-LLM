@@ -4,9 +4,10 @@ from typing import List
 from tqdm import tqdm
 
 from src.cram_gen.eval import calculate_correlations
+from src.cram_gen.eval.correlation_visualiser import visualise_correlations
 from src.cram_gen.inout import ResultReader, import_actions, write_metrics_as_csv, calculate_averages
 from src.cram_gen.inout.prompting import Prompter, OpenAIPrompter, GemmaPrompter, LlamaPrompter
-from src.cram_gen.model import ALL_MODELS, ResultColumnHeaders, OpenAIModels, OpenSourceModels
+from src.cram_gen.model import ALL_MODELS, OpenAIModels, OpenSourceModels
 
 MAX_RUNS = 5
 
@@ -91,10 +92,8 @@ if __name__ == '__main__':
         print("\n-----\nEND STEP 3: AVERAGE CALCULATION\n")
     if "all" in args.steps or "corr" in args.steps:
         print("\n-----\nSTART STEP 4: CORRELATIONS\n")
-        metrics = [ResultColumnHeaders.wup, ResultColumnHeaders.glove, ResultColumnHeaders.smd]
-        for mt in models:
-            for m in metrics:
-                calculate_correlations(mt, m)
+        calculate_correlations(models)
+        visualise_correlations(models)
         print("\n-----\nEND STEP 4: CORRELATIONS\n")
     if "ltx_tab" in args.steps:
         for mt in models:
