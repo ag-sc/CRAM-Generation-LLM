@@ -18,7 +18,7 @@ import pandas as pd
 from src.pycram_gen.metrics import compilation_success
 from src.pycram_gen.models.constants import VERBOSE
 from src.pycram_gen.models.enums import ModelType, Metrics, ResultColumnCram
-from src.pycram_gen.models.utils import get_model_type_from_model_name, compute_metrics
+from src.pycram_gen.models.utils import get_model_specifics_from_model_name, compute_metrics
 
 # argument parser for selecting the model whose results are to be evaluated
 parser = argparse.ArgumentParser(description="Compute code metrics for the " +
@@ -28,7 +28,7 @@ parser.add_argument("-m", "--model", help="LLM to be evaluated", required=True,
 args = parser.parse_args()
 
 # get the ModelType enum element whose value corresponds to the model argument
-model = get_model_type_from_model_name(args.model)
+model = get_model_specifics_from_model_name(args.model)[0]
 
 # list for saving the results of the code metric computation using the
 # respective PyCRAM ground truth designator as the reference for the metrics
@@ -36,7 +36,7 @@ scores_target_ground_truth = []
 
 # get the path for the results generated using this model
 base_path = "../../data/cram_conversion"
-model_path = os.path.join(base_path, model.value)
+model_path = os.path.join(base_path, model.value.lower())
 
 # determine paths for the full and processed designators
 path_full = os.path.join(model_path, "full")

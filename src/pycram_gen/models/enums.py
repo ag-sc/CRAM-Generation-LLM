@@ -11,6 +11,8 @@ class ModelType(Enum):
     CHAT_GPT_NEW = "gpt-3.5-turbo-1106"
     GPT_4_OLD = "gpt-4-0613"
     GPT_4_NEW = "gpt-4-1106-preview"
+    LLAMA = "Llama-3.3-70B-Instruct"
+    GEMMA = "gemma-2-27b-it"
 
 class ActionSynset(Enum):
     """

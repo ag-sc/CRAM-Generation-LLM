@@ -9,7 +9,7 @@ import os
 from src.pycram_gen.models.constants import VERBOSE, ACTIONS
 from src.pycram_gen.models.enums import ModelType
 from src.pycram_gen.models.exceptions import PrompterException
-from src.pycram_gen.models.prompter import OpenAIPrompter
+from src.pycram_gen.models.openai_prompter import OpenAIPrompter
 
 # get the action descriptions from the json file
 with open("../../data/action_descriptions.json", "r") as f:
@@ -23,8 +23,8 @@ with open("data/designators/imports.py", "r") as f:
 levels_of_detail = ["1", "2", "3"]
 
 # initialize the prompter and set the model to be used
-prompter = OpenAIPrompter()
 model = ModelType.GPT_4_OLD
+prompter = OpenAIPrompter(model.value)
 
 # path to directory for saving generated designators
 path = "../../data/prompt_engineering/raw/"
@@ -69,12 +69,8 @@ for reference_detail in levels_of_detail:
 
             # send prompt to LLM
             try:
-                target_designator = prompter.generate_designator(model,
-                                                                 reference_action,
-                                                                 reference_description,
-                                                                 full_reference,
-                                                                 target_action,
-                                                                 target_description,
+                target_designator = prompter.generate_designator(reference_action, reference_description,
+                                                                 full_reference, target_action, target_description,
                                                                  target_constructor)
             # PrompterException raised if the finish reason is not 'stop', in this
             # case generation has ended unexpectedly; Output a warning message

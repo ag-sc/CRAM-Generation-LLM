@@ -17,7 +17,7 @@ import os
 
 from src.pycram_gen.models.constants import VERBOSE
 from src.pycram_gen.models.enums import ModelType
-from src.pycram_gen.models.utils import get_model_type_from_model_name, remove_imports, remove_comments, \
+from src.pycram_gen.models.utils import get_model_specifics_from_model_name, remove_imports, remove_comments, \
     remove_blank_lines
 
 # argument parser for selecting the model whose results are to be processed
@@ -27,7 +27,7 @@ parser.add_argument("-m", "--model", help="LLM to be evaluated", required=True,
 args = parser.parse_args()
 
 # get the ModelType enum element whose value corresponds to the model argument
-model = get_model_type_from_model_name(args.model)
+model = get_model_specifics_from_model_name(args.model)[0]
 
 # get the common import statements
 with open("data/designators/imports.py", "r") as f:
@@ -36,7 +36,7 @@ with open("data/designators/imports.py", "r") as f:
 # base path for the results of this experiment
 base_path = "../../data/pycram_generation"
 # path containing the results for the selected model
-model_path = os.path.join(base_path, model.value)
+model_path = os.path.join(base_path, model.value.lower())
 
 # get the runs performed using this model
 runs = sorted(next(os.walk(model_path))[1])

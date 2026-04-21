@@ -14,8 +14,8 @@ import os
 
 from src.pycram_gen.models.constants import VERBOSE, ACTIONS, REFERENCE_DETAIL, TARGET_DETAIL
 from src.pycram_gen.models.enums import ModelType
-from src.pycram_gen.models.prompter import OpenAIPrompter, PrompterException
-from src.pycram_gen.models.utils import get_model_type_from_model_name
+from src.pycram_gen.models.exceptions import PrompterException
+from src.pycram_gen.models.utils import get_model_specifics_from_model_name
 
 # argument parser for parsing command line argument which sets the LLM to be used
 parser = argparse.ArgumentParser(description="Generate PyCRAM designators using " +
@@ -28,13 +28,13 @@ args = parser.parse_args()
 # if this occurs, a warning is printed in the end
 generation_interrupted = False
 
-# get the ModelType enum element whose value corresponds to the model argument
-model = get_model_type_from_model_name(args.model)
+# get the ModelType enum element & initialise the prompter
+model, prompter = get_model_specifics_from_model_name(args.model)
 
 # base path for saving the generated designators for this experiment
 base_path = "../../data/pycram_generation/"
 # path for saving generated designators for this model
-model_path = os.path.join(base_path, model.value)
+model_path = os.path.join(base_path, model.value.lower())
 
 # check whether the model path exists
 if os.path.exists(model_path):
@@ -68,9 +68,6 @@ with open("../../data/action_descriptions.json", "r") as f:
 # get the import statements which are shared by all designators
 with open("data/designators/imports.py", "r") as f:
     import_statements = f.read()
-
-# initialize the prompter
-prompter = OpenAIPrompter()
 
 # variables for determining the current progress
 if VERBOSE:
@@ -115,13 +112,8 @@ for reference_action in ACTIONS:
 
         # send prompt to LLM to generate the designator
         try:
-            target_designator = prompter.generate_designator(model,
-                                                             reference_action,
-                                                             reference_description,
-                                                             full_reference,
-                                                             target_action,
-                                                             target_description,
-                                                             target_constructor)
+            target_designator = prompter.generate_designator(reference_action, reference_description, full_reference,
+                                                             target_action, target_description, target_constructor)
         # PrompterException raised if the finish reason is not 'stop', in this
         # case generation has ended unexpectedly; Output a warning message
         # if this occurs and save the reponse to a log file

@@ -85,7 +85,7 @@ python3 prompt_engineering_evaluation.py
 ### PyCRAM Generation Experiment
 
 ```bash
-for model in gpt-3.5-turbo-0301 gpt-3.5-turbo-1106 gpt-4-0613 gpt-4-1106-preview # Repeat for all four models
+for model in gpt-3.5-turbo-0301 gpt-3.5-turbo-1106 gpt-4-0613 gpt-4-1106-preview gemma-2-27b-it Llama-3.3-70B-Instruct # Repeat for all six models
 do
     for run in {1...5} # Perform five runs using each model
     do
@@ -100,7 +100,7 @@ done
 ### CRAM Conversion Experiment
 
 ```bash
-for model in gpt-3.5-turbo-0301 gpt-3.5-turbo-1106 gpt-4-0613 gpt-4-1106-preview # Repeat for all four models
+for model in gpt-3.5-turbo-0301 gpt-3.5-turbo-1106 gpt-4-0613 gpt-4-1106-preview gemma-2-27b-it Llama-3.3-70B-Instruct # Repeat for all six models
 do
     python3 cram_conversion_generation.py -m $model
     python3 cram_conversion_processing.py -m $model

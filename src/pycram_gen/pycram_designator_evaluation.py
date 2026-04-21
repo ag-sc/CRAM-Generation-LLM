@@ -22,7 +22,7 @@ from scipy.stats import spearmanr
 
 from src.pycram_gen.models.constants import VERBOSE, CLOSER_COLUMN_NAME, ACTIONS
 from src.pycram_gen.models.enums import ModelType, ResultColumnPycram, ActionSimilarityColumns
-from src.pycram_gen.models.utils import get_model_type_from_model_name
+from src.pycram_gen.models.utils import get_model_specifics_from_model_name
 
 # argument parser for selecting the model whose results are to be evaluated
 parser = argparse.ArgumentParser(description="Evaluate the generated designators")
@@ -31,7 +31,7 @@ parser.add_argument("-m", "--model", help="LLM to be evaluated", required=True,
 args = parser.parse_args()
 
 # get the ModelType enum element whose value corresponds to the model argument
-model = get_model_type_from_model_name(args.model)
+model = get_model_specifics_from_model_name(args.model)[0]
 
 # output selected model name
 if VERBOSE:
@@ -40,7 +40,7 @@ if VERBOSE:
 # base path for the results of this experiment
 base_path = "../../data/pycram_generation"
 # path containing the results for the selected model
-model_path = os.path.join(base_path, model.value)
+model_path = os.path.join(base_path, model.value.lower())
 
 # read the results of code metrics for target/ground truth
 df_gt = pd.read_csv(os.path.join(model_path, "results_target_ground_truth.csv"),

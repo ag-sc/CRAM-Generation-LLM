@@ -15,8 +15,7 @@ import os
 from src.pycram_gen.models.constants import VERBOSE, TARGET_DETAIL, CRAM_ACTIONS
 from src.pycram_gen.models.enums import ModelType
 from src.pycram_gen.models.exceptions import PrompterException
-from src.pycram_gen.models.prompter import OpenAIPrompter
-from src.pycram_gen.models.utils import get_model_type_from_model_name
+from src.pycram_gen.models.utils import get_model_specifics_from_model_name
 
 # argument parser for parsing command line argument which sets the LLM to be used
 parser = argparse.ArgumentParser(description="Convert CRAM designators into PyCRAM " +
@@ -29,13 +28,13 @@ args = parser.parse_args()
 # if this occurs, a warning is printed in the end
 generation_interrupted = False
 
-# get the ModelType enum element whose value corresponds to the model argument
-model = get_model_type_from_model_name(args.model)
+# get the ModelType enum element & initialise the prompter
+model, prompter = get_model_specifics_from_model_name(args.model)
 
 # base path for saving the generated designators for this experiment
 base_path = "../../data/cram_conversion/"
 # path for saving generated designators for this model
-model_path = os.path.join(base_path, model.value)
+model_path = os.path.join(base_path, model.value.lower())
 
 # create directory for saving results for this model
 path = os.path.join(model_path, "raw")
@@ -56,9 +55,6 @@ with open("data/designators/imports.py", "r") as f:
 # the full basic structure of a PyCRAM designator consists of the import
 # statements and the basic structure
 pycram_structure_full = import_statements + "\n" + pycram_structure
-
-# initialize the prompter
-prompter = OpenAIPrompter()
 
 # the number of runs to be performed using this model
 NUMBER_OF_RUNS = 5
@@ -94,13 +90,9 @@ for action in CRAM_ACTIONS:
 
         # send prompt to LLM to convert designator
         try:
-            pycram_designator = prompter.convert_cram_designator(model,
-                                                                 action,
-                                                                 cram_description,
-                                                                 cram_designator,
-                                                                 pycram_structure_full,
-                                                                 pycram_description,
-                                                                 pycram_constructor)
+            pycram_designator = prompter.translate_cram_designator(action, cram_description, cram_designator,
+                                                                   pycram_structure_full, pycram_description,
+                                                                   pycram_constructor)
         # PrompterException raised if the finish reason is not 'stop', in this
         # case generation has ended unexpectedly; Output a warning message
         # if this occurs and save the reponse to a log file

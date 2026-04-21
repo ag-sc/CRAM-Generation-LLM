@@ -1,10 +1,15 @@
 # -*- coding: utf-8 -*-
 
 from typing import List, Tuple, Dict
+
 from nltk.util import ngrams
 
 from .constants import ACTIONS
 from .enums import Metrics, ModelType
+from .gemma_prompter import GemmaPrompter
+from .llama_prompter import LlamaPrompter
+from .openai_prompter import OpenAIPrompter
+from .prompter import Prompter
 from ..metrics import tokenize, chrf, code_bert_score, code_bleu, crystal_bleu, edit_distance, rouge_l
 from ..metrics.code_bleu.parser import remove_comments_and_docstrings
 
@@ -137,7 +142,8 @@ def compute_metrics(reference: str, generated:str) -> Dict[int, float]:
                 Metrics.ROUGE_L.value: rouge_l_score
             }
 
-def get_model_type_from_model_name(model_name: str) -> ModelType:
+
+def get_model_specifics_from_model_name(model_name: str) -> Tuple[ModelType, Prompter]:
     """
     Get the element of the ModelType enum whose value corresponds to
     the given model name
@@ -145,5 +151,11 @@ def get_model_type_from_model_name(model_name: str) -> ModelType:
     :param model_name: Name of the model
     :return: Element of ModelType enum whose value is the model name
     """
-
-    return [model for model in ModelType if model.value==model_name][0]
+    model_type = [model for model in ModelType if model.value == model_name][0]
+    if "gpt" in model_name.lower():
+        prompter = OpenAIPrompter(model_name)
+    elif "llama" in model_name.lower():
+        prompter = LlamaPrompter()
+    else:
+        prompter = GemmaPrompter()
+    return model_type, prompter
