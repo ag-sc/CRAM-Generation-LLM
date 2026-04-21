@@ -15,7 +15,7 @@ from src.pycram_gen.models.constants import VERBOSE
 from src.pycram_gen.models.utils import remove_imports, remove_blank_lines, remove_comments
 
 # paths of directories for the prompt engineering designators
-base_path = "../../data/prompt_engineering/"
+base_path = "data/prompt_engineering/"
 path_raw = os.path.join(base_path, "raw")
 path_full = os.path.join(base_path, "full")
 path_processed = os.path.join(base_path, "processed")

@@ -35,7 +35,7 @@ model = get_model_specifics_from_model_name(args.model)[0]
 scores_target_ground_truth = []
 
 # get the path for the results generated using this model
-base_path = "../../data/cram_conversion"
+base_path = "data/cram_conversion"
 model_path = os.path.join(base_path, model.value.lower())
 
 # determine paths for the full and processed designators

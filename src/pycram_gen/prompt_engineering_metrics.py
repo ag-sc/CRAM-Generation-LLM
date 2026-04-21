@@ -36,7 +36,7 @@ scores_target_ground_truth = []
 scores_target_reference = []
 
 # paths of directories containing the generated designators
-base_path = "../../data/prompt_engineering"
+base_path = "data/prompt_engineering"
 path_full = os.path.join(base_path, "full")
 path_processed = os.path.join(base_path, "processed")
 

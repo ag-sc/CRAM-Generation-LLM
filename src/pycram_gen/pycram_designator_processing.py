@@ -34,7 +34,7 @@ with open("data/pycram_designators/imports.py", "r") as f:
     import_statements = f.read()
 
 # base path for the results of this experiment
-base_path = "../../data/pycram_generation"
+base_path = "data/pycram_generation"
 # path containing the results for the selected model
 model_path = os.path.join(base_path, model.value.lower())
 

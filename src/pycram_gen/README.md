@@ -89,11 +89,11 @@ for model in gpt-3.5-turbo-0301 gpt-3.5-turbo-1106 gpt-4-0613 gpt-4-1106-preview
 do
     for run in {1...5} # Perform five runs using each model
     do
-        python3 pycram_designator_generation.py -m $model
+        python3 -m src.pycram_gen.pycram_designator_generation -m $model
     done
-    python3 pycram_designator_processing.py -m $model
-    python3 pycram_designator_metrics.py -m $model
-    python3 pycram_designator_evaluation.py -m $model
+    python3 -m src.pycram_gen.pycram_designator_processing -m $model
+    python3 -m src.pycram_gen.pycram_designator_metrics -m $model
+    python3 -m src.pycram_gen.pycram_designator_evaluation -m $model
 done
 ```
 
@@ -102,9 +102,9 @@ done
 ```bash
 for model in gpt-3.5-turbo-0301 gpt-3.5-turbo-1106 gpt-4-0613 gpt-4-1106-preview gemma-2-27b-it Llama-3.3-70B-Instruct # Repeat for all six models
 do
-    python3 cram_conversion_generation.py -m $model
-    python3 cram_conversion_processing.py -m $model
-    python3 cram_conversion_metrics.py -m $model
+    python3 -m src.pycram_gen.cram_conversion_generation -m $model
+    python3 -m src.pycram_gen.cram_conversion_processing -m $model
+    python3 -m src.pycram_gen.cram_conversion_metrics -m $model
 done
 ```
 

@@ -12,7 +12,7 @@ from src.pycram_gen.models.exceptions import PrompterException
 from src.pycram_gen.models.openai_prompter import OpenAIPrompter
 
 # get the action descriptions from the json file
-with open("../../data/action_descriptions.json", "r") as f:
+with open("data/action_descriptions.json", "r") as f:
     action_descriptions = json.load(f)
 
 # get the import statemets which are shared by all designators
@@ -27,7 +27,7 @@ model = ModelType.GPT_4_OLD
 prompter = OpenAIPrompter(model.value)
 
 # path to directory for saving generated designators
-path = "../../data/prompt_engineering/raw/"
+path = "data/prompt_engineering/raw/"
 os.makedirs(path)
 
 # variables for determining the current progress

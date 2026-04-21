@@ -23,7 +23,7 @@ from src.pycram_gen.models.constants import ACTIONS, CLOSER_COLUMN_NAME
 from src.pycram_gen.models.enums import ResultColumnPromptEngineering
 
 # path to directory containing results
-path = "../../data/prompt_engineering"
+path = "data/prompt_engineering"
 
 # read the results of code metrics for target/ground truth
 df_gt = pd.read_csv(os.path.join(path, "results_target_ground_truth.csv"),

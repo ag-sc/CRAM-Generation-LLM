@@ -37,7 +37,7 @@ scores_target_ground_truth = []
 scores_target_reference = []
 
 # get the path for the results generated using this model
-base_path = "../../data/pycram_generation"
+base_path = "data/pycram_generation"
 model_path = os.path.join(base_path, model.value.lower())
 
 # get the runs performed using this model

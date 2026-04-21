@@ -32,7 +32,7 @@ generation_interrupted = False
 model, prompter = get_model_specifics_from_model_name(args.model)
 
 # base path for saving the generated designators for this experiment
-base_path = "../../data/pycram_generation/"
+base_path = "data/pycram_generation/"
 # path for saving generated designators for this model
 model_path = os.path.join(base_path, model.value.lower())
 
@@ -62,7 +62,7 @@ path = os.path.join(run_path, "raw")
 os.makedirs(path)
 
 # get the action descriptions from the json file
-with open("../../data/action_descriptions.json", "r") as f:
+with open("data/action_descriptions.json", "r") as f:
     action_descriptions = json.load(f)
 
 # get the import statements which are shared by all designators
