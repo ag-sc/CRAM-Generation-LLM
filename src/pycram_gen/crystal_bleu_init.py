@@ -12,7 +12,7 @@ from src.pycram_gen.models.constants import CRYSTAL_BLEU_K, TRIVIALLY_SHARED_NGR
 from src.pycram_gen.models.utils import get_all_ngrams
 
 # path of directory containing processed designators
-path = "data/designators/processed/"
+path = "data/pycram_designators/processed/"
 
 # list of all n-grams contained in the designators
 all_ngrams = get_all_ngrams(path)

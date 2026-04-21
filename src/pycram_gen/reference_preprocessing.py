@@ -6,6 +6,7 @@ Save the processed designators to data/designators/processed .
 """
 
 import os
+from pathlib import Path
 
 from src.pycram_gen.models.constants import ACTIONS, VERBOSE
 from src.pycram_gen.models.utils import remove_blank_lines, remove_comments
@@ -22,6 +23,8 @@ for action in ACTIONS:
         designator = f.read()
     # process the designator
     processed = remove_blank_lines(remove_comments(designator))
+    out_dir = Path(path) / "processed"
+    out_dir.mkdir(parents=True, exist_ok=True)
     # write the processed designator
-    with open(os.path.join(path, "processed", action+".py"), "x") as f:
+    with open(os.path.join(out_dir, action+".py"), "x") as f:
         f.write(processed)
