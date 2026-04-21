@@ -44,7 +44,7 @@ model_path = os.path.join(base_path, model.value.lower())
 runs = sorted(next(os.walk(model_path))[1])
 
 # path for the reference designators
-path_reference = "data/designators/processed"
+path_reference = "data/pycram_designators/processed"
 
 # variables for determining the current progress
 if VERBOSE:

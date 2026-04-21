@@ -43,7 +43,7 @@ path_full = os.path.join(model_path, "full")
 path_processed = os.path.join(model_path, "processed")
 
 # path for the reference designators
-path_reference = "data/designators/processed"
+path_reference = "data/pycram_designators/processed"
 
 # get the file names of the designators generated using this model
 designators = sorted(os.listdir(path_processed))

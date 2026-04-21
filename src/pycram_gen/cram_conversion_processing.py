@@ -30,7 +30,7 @@ args = parser.parse_args()
 model = get_model_specifics_from_model_name(args.model)[0]
 
 # get the common import statements
-with open("data/designators/imports.py", "r") as f:
+with open("data/pycram_designators/imports.py", "r") as f:
     import_statements = f.read()
 
 # base path for the results of this experiment

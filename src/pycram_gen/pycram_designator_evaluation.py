@@ -52,7 +52,7 @@ df_ref = pd.read_csv(os.path.join(model_path, "results_target_reference.csv"),
 # 1. Compute correlations between action similarity and code metrics
 
 # get the action similarity results
-df_as = pd.read_csv("data/action_similarity.csv", index_col=0)
+df_as = pd.read_csv("data/pycram_generation/action_similarity.csv", index_col=0)
 
 # construct dataframe with code metric results and action similarity metrics
 

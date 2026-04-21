@@ -66,7 +66,7 @@ with open("../../data/action_descriptions.json", "r") as f:
     action_descriptions = json.load(f)
 
 # get the import statements which are shared by all designators
-with open("data/designators/imports.py", "r") as f:
+with open("data/pycram_designators/imports.py", "r") as f:
     import_statements = f.read()
 
 # variables for determining the current progress
@@ -85,7 +85,7 @@ for reference_action in ACTIONS:
     reference_description = action_descriptions[reference_action][reference_detail]
 
     # get the reference designator
-    with open(os.path.join("data/designators/", reference_action+".py"), "r") as f:
+    with open(os.path.join("data/pycram_designators/", reference_action+".py"), "r") as f:
         reference_designator = f.read()
 
     # full reference consists of the common import statements and the reference

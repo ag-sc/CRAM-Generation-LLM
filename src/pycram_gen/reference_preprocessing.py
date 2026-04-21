@@ -11,7 +11,7 @@ from src.pycram_gen.models.constants import ACTIONS, VERBOSE
 from src.pycram_gen.models.utils import remove_blank_lines, remove_comments
 
 # path of the directory containing reference designators
-path = "data/designators/"
+path = "data/pycram_designators/"
 
 # iterate over all actions
 for action in ACTIONS:

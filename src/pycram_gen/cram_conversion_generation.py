@@ -45,11 +45,11 @@ with open("../../data/action_descriptions.json", "r") as f:
     action_descriptions = json.load(f)
 
 # get the basic structure of a PyCRAM designator
-with open("data/designators/basic_structure.py", "r") as f:
+with open("data/pycram_designators/basic_structure.py", "r") as f:
     pycram_structure = f.read()
 
 # get the import statements for the PyCRAM designators
-with open("data/designators/imports.py", "r") as f:
+with open("data/pycram_designators/imports.py", "r") as f:
     import_statements = f.read()
 
 # the full basic structure of a PyCRAM designator consists of the import
@@ -76,7 +76,7 @@ for action in CRAM_ACTIONS:
     pycram_constructor = action_descriptions[action]["constructor"]
 
     # get the CRAM reference designator
-    with open(os.path.join("data/designators/cram", action+".lisp"), "r") as f:
+    with open(os.path.join("data/cram_designators/", action+".lisp"), "r") as f:
         cram_designator = f.read()
 
     # iterate over the runs to be performed
