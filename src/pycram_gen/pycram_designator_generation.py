@@ -8,14 +8,14 @@ Usage:
     $ python3 pycram_designator_generation.py -m [model]
 """
 
+import argparse
 import json
 import os
-import argparse
 
-from src.prompter import OpenAIPrompter, PrompterException
-from src.utils import get_model_type_from_model_name
-from src.enums import ModelType
-from src.constants import ACTIONS, VERBOSE, REFERENCE_DETAIL, TARGET_DETAIL
+from src.pycram_gen.models.constants import VERBOSE, ACTIONS, REFERENCE_DETAIL, TARGET_DETAIL
+from src.pycram_gen.models.enums import ModelType
+from src.pycram_gen.models.prompter import OpenAIPrompter, PrompterException
+from src.pycram_gen.models.utils import get_model_type_from_model_name
 
 # argument parser for parsing command line argument which sets the LLM to be used
 parser = argparse.ArgumentParser(description="Generate PyCRAM designators using " +

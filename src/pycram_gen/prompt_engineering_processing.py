@@ -11,8 +11,8 @@ Each designator is saved in three copies:
 
 import os
 
-from src.utils import remove_imports, remove_blank_lines, remove_comments
-from src.constants import VERBOSE
+from src.pycram_gen.models.constants import VERBOSE
+from src.pycram_gen.models.utils import remove_imports, remove_blank_lines, remove_comments
 
 # paths of directories for the prompt engineering designators
 base_path = "../../data/prompt_engineering/"

@@ -3,11 +3,11 @@
 from typing import List, Tuple, Dict
 from nltk.util import ngrams
 
-from .metrics import (chrf, code_bert_score, code_bleu, crystal_bleu,
-                          edit_distance, rouge_l, tokenize)
-from .metrics.code_bleu.parser.utils import remove_comments_and_docstrings
 from .constants import ACTIONS
 from .enums import Metrics, ModelType
+from ..metrics import tokenize, chrf, code_bert_score, code_bleu, crystal_bleu, edit_distance, rouge_l
+from ..metrics.code_bleu.parser import remove_comments_and_docstrings
+
 
 def remove_comments(source: str) -> str:
     """

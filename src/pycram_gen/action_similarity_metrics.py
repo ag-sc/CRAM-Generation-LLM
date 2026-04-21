@@ -8,11 +8,12 @@ of reference and target actions using the following metrics:
 """
 
 import json
+
 import pandas as pd
 
-from src.action_similarity import cosine_similarity_glove, wu_palmer_similarity
-from src.enums import ActionSimilarityColumns
-from src.constants import ACTIONS, SAME_AUTHOR_ACTIONS
+from src.pycram_gen.action_similarity import wu_palmer_similarity, cosine_similarity_glove
+from src.pycram_gen.models.constants import ACTIONS, SAME_AUTHOR_ACTIONS
+from src.pycram_gen.models.enums import ActionSimilarityColumns
 
 # get the WordNet synsets for the actions
 with open("../../data/action_synsets.json", "r") as f:

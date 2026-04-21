@@ -5,10 +5,11 @@ designators. These are required for computing the CrystalBLEU metric.
 """
 
 from collections import Counter
+
 import numpy as np
 
-from src.utils import get_all_ngrams
-from src.constants import CRYSTAL_BLEU_K, TRIVIALLY_SHARED_NGRAMS_LOCATION
+from src.pycram_gen.models.constants import CRYSTAL_BLEU_K, TRIVIALLY_SHARED_NGRAMS_LOCATION
+from src.pycram_gen.models.utils import get_all_ngrams
 
 # path of directory containing processed designators
 path = "data/designators/processed/"

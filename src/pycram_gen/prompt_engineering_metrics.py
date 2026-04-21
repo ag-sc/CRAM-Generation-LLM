@@ -19,12 +19,13 @@ i.e., the versions without comments and imports.
 """
 
 import os
+
 import pandas as pd
 
-from src.metrics import compilation_success
-from src.utils import compute_metrics
-from src.enums import Metrics, ResultColumnPromptEngineering
-from src.constants import VERBOSE
+from src.pycram_gen.metrics import compilation_success
+from src.pycram_gen.models.constants import VERBOSE
+from src.pycram_gen.models.enums import Metrics, ResultColumnPromptEngineering
+from src.pycram_gen.models.utils import compute_metrics
 
 # list for saving the evaluation results when using the ground truth designator
 # as the reference for computing the metrics

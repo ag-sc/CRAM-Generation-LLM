@@ -8,14 +8,15 @@ Usage:
     $ python3 cram_conversion_generation.py -m [model]
 """
 
+import argparse
 import json
 import os
-import argparse
 
-from src.prompter import OpenAIPrompter, PrompterException
-from src.utils import get_model_type_from_model_name
-from src.enums import ModelType
-from src.constants import VERBOSE, CRAM_ACTIONS, TARGET_DETAIL
+from src.pycram_gen.models.constants import VERBOSE, TARGET_DETAIL, CRAM_ACTIONS
+from src.pycram_gen.models.enums import ModelType
+from src.pycram_gen.models.exceptions import PrompterException
+from src.pycram_gen.models.prompter import OpenAIPrompter
+from src.pycram_gen.models.utils import get_model_type_from_model_name
 
 # argument parser for parsing command line argument which sets the LLM to be used
 parser = argparse.ArgumentParser(description="Convert CRAM designators into PyCRAM " +

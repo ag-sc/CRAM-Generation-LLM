@@ -13,15 +13,16 @@ Usage:
     $ python3 pycram_designator_evaluation.py -m [model]
 """
 
-import os
 import argparse
-import pandas as pd
+import os
+
 import numpy as np
+import pandas as pd
 from scipy.stats import spearmanr
 
-from src.utils import get_model_type_from_model_name
-from src.enums import ModelType, ResultColumnPycram, ActionSimilarityColumns
-from src.constants import VERBOSE, ACTIONS, CLOSER_COLUMN_NAME
+from src.pycram_gen.models.constants import VERBOSE, CLOSER_COLUMN_NAME, ACTIONS
+from src.pycram_gen.models.enums import ModelType, ResultColumnPycram, ActionSimilarityColumns
+from src.pycram_gen.models.utils import get_model_type_from_model_name
 
 # argument parser for selecting the model whose results are to be evaluated
 parser = argparse.ArgumentParser(description="Evaluate the generated designators")

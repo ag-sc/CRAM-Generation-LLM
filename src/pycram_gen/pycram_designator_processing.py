@@ -12,13 +12,13 @@ Usage:
     $ python3 pycram_designator_processing.py -m [model]
 """
 
-import os
 import argparse
+import os
 
-from src.utils import (remove_imports, remove_blank_lines, remove_comments,
-                           get_model_type_from_model_name)
-from src.enums import ModelType
-from src.constants import VERBOSE
+from src.pycram_gen.models.constants import VERBOSE
+from src.pycram_gen.models.enums import ModelType
+from src.pycram_gen.models.utils import get_model_type_from_model_name, remove_imports, remove_comments, \
+    remove_blank_lines
 
 # argument parser for selecting the model whose results are to be processed
 parser = argparse.ArgumentParser(description="Process generated designators")

@@ -9,15 +9,16 @@ Usage:
     $ python3 cram_conversion_metrics.py -m [model]
 """
 
-import os
 import argparse
 import math
+import os
+
 import pandas as pd
 
-from src.metrics import compilation_success
-from src.utils import compute_metrics, get_model_type_from_model_name
-from src.enums import Metrics, ModelType, ResultColumnCram
-from src.constants import VERBOSE
+from src.pycram_gen.metrics import compilation_success
+from src.pycram_gen.models.constants import VERBOSE
+from src.pycram_gen.models.enums import ModelType, Metrics, ResultColumnCram
+from src.pycram_gen.models.utils import get_model_type_from_model_name, compute_metrics
 
 # argument parser for selecting the model whose results are to be evaluated
 parser = argparse.ArgumentParser(description="Compute code metrics for the " +

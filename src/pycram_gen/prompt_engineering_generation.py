@@ -6,10 +6,10 @@ Python script for generating designator in the prompt engineering experiment.
 import json
 import os
 
-from src.prompter import OpenAIPrompter
-from src.exceptions import PrompterException
-from src.enums import ModelType
-from src.constants import ACTIONS, VERBOSE
+from src.pycram_gen.models.constants import VERBOSE, ACTIONS
+from src.pycram_gen.models.enums import ModelType
+from src.pycram_gen.models.exceptions import PrompterException
+from src.pycram_gen.models.prompter import OpenAIPrompter
 
 # get the action descriptions from the json file
 with open("../../data/action_descriptions.json", "r") as f:

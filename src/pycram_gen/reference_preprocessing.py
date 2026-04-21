@@ -7,8 +7,8 @@ Save the processed designators to data/designators/processed .
 
 import os
 
-from src.utils import remove_comments, remove_blank_lines
-from src.constants import ACTIONS, VERBOSE
+from src.pycram_gen.models.constants import ACTIONS, VERBOSE
+from src.pycram_gen.models.utils import remove_blank_lines, remove_comments
 
 # path of the directory containing reference designators
 path = "data/designators/"

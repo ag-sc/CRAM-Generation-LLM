@@ -15,11 +15,12 @@ This consists of the following three parts:
 """
 
 import os
-import pandas as pd
-import numpy as np
 
-from src.enums import ResultColumnPromptEngineering
-from src.constants import ACTIONS, CLOSER_COLUMN_NAME
+import numpy as np
+import pandas as pd
+
+from src.pycram_gen.models.constants import ACTIONS, CLOSER_COLUMN_NAME
+from src.pycram_gen.models.enums import ResultColumnPromptEngineering
 
 # path to directory containing results
 path = "../../data/prompt_engineering"
