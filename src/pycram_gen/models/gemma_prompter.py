@@ -21,15 +21,18 @@ class GemmaPrompter(Prompter):
 
     def _prompt(self, messages) -> str:
         prompt = self.tokenizer.apply_chat_template(messages, tokenize=False, add_generation_prompt=True)
-        inputs = self.tokenizer(
+        inputs = self.tokenizer.encode(
             prompt,
+            add_special_tokens=False,
             return_tensors="pt",
             truncation=True,
-            max_length=4096,
+            max_length=4096
+        ).to(self.model.device)
+        outputs = self.model.generate(
+            input_ids=inputs,
+            max_new_tokens=self.max_new_tokens,
+            do_sample=False
         )
-        with torch.no_grad():
-            outputs = self.model.generate(input_ids=inputs.to(self.model.device), max_new_tokens=self.max_new_tokens,
-                                          do_sample=False, temperature=self._temperature, top_p=None)
         generated = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         match = re.search(r"<start_of_turn>model(.*?)<end_of_turn>", generated, re.DOTALL)
         result = match.group(1).strip() if match else None

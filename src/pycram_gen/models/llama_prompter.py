@@ -1,4 +1,5 @@
 import torch
+import re
 import transformers
 
 from .enums import ModelType
@@ -54,8 +55,8 @@ class LlamaPrompter(Prompter):
         return self.extract_designator(result)
 
     def extract_designator(self, model_answer: str) -> str:
-        designator = model_answer.split("```")[0]
-        return designator
+        clean_code = re.sub(r"^```[a-zA-Z]*\n|```$", "", model_answer.strip())
+        return clean_code
 
     def generate_designator(self, reference_name: str, reference_description: str, reference_designator: str,
                             target_name: str, target_description: str, target_constructor: str) -> str:
