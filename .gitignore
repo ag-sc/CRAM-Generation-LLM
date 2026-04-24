@@ -162,6 +162,19 @@ cython_debug/
 
 # Data exclusion
 /data/cram_designators/
+/data/pycram_designators/cut.py
+/data/pycram_designators/mix.py
+/data/pycram_designators/grasp.py
+/data/pycram_designators/transport.py
+/data/pycram_designators/processed/
 
-# exclude credentials
+# exclude specific files for the CodeBLEU metric
+/src/pycram_gen/metrics/code_bleu/bleu.py
+/src/pycram_gen/metrics/code_bleu/utils.py
+/src/pycram_gen/metrics/code_bleu/weighted_ngram_match.py
+
+# exclude the computed n-gram occurrence analysis for CrystalBLEU
+data/trivially_shared_ngrams.npy
+
+# exclude OpenAI credentials
 credentials.json
