@@ -22,7 +22,6 @@ def choose_prompter(model_type) -> Prompter:
 
 
 def generate_designators(models: List[str]):
-    print("\n-----\nSTART STEP 1: GENERATION\n")
     actions = import_actions()
     for mt in tqdm(models, 'Generating designators for each model'):
         reader.set_model(mt)
@@ -40,11 +39,9 @@ def generate_designators(models: List[str]):
                     des = prompter.generate_designator(ref_a, gen_a)
                     designators.append(des)
                     print(f'Successfully generated: {gen_a.get_name()} based on {ref_a.get_name()} for model {mt} - run {r}')
-    print("\n-----\nEND STEP 1: GENERATION\n")
 
 
 def calculate_metrics(models: List[str]):
-    print("\n-----\nSTART STEP 2: METRIC CALCULATION\n")
     actions = import_actions()
     for mt in tqdm(models, 'Calculating the metrics for each model'):
         reader.set_model(mt)
@@ -58,7 +55,6 @@ def calculate_metrics(models: List[str]):
                     designator.calculate_metrics()
                     designators.append(designator)
     write_metrics_as_csv(designators)
-    print("\n-----\nEND STEP 2: METRIC CALCULATION\n")
 
 if __name__ == '__main__':
     reader = ResultReader()
@@ -83,9 +79,13 @@ if __name__ == '__main__':
         models = ALL_MODELS
 
     if "all" in args.steps or "gen" in args.steps:
+        print("\n-----\nSTART STEP 1: GENERATION\n")
         generate_designators(models)
+        print("\n-----\nEND STEP 1: GENERATION\n")
     if "all" in args.steps or "metrics" in args.steps:
+        print("\n-----\nSTART STEP 2: METRIC CALCULATION\n")
         calculate_metrics(models)
+        print("\n-----\nEND STEP 2: METRIC CALCULATION\n")
     if "all" in args.steps or "avg" in args.steps:
         print("\n-----\nSTART STEP 3: AVERAGE CALCULATION\n")
         calculate_averages(MAX_RUNS, models)

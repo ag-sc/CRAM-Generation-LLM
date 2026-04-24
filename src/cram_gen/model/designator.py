@@ -1,7 +1,7 @@
 import torch
 
 from src.cram_gen.eval import WordNetHandler, GloveHandler, calculate_bleu, calculate_rouge, calculate_code_bert_score, \
-    calculate_chrf
+    calculate_chrf, check_readability
 from .action import Action
 
 
@@ -9,7 +9,7 @@ class GeneratedDesignator:
     wn_handler = WordNetHandler()
     glove_handler = GloveHandler()
 
-    def __init__(self, ref_act: Action, gen_act: Action, designator: str, model_name: str, run: int):
+    def __init__(self, ref_act: Action, gen_act: Action, designator: str, model_name: str, run: int, file_location=""):
         self.__reference_action = ref_act
         self.__generated_action = gen_act
         self.__designator = designator
@@ -26,6 +26,7 @@ class GeneratedDesignator:
         self.__lines = 0
         self.__model = model_name
         self.__run = run
+        self.__file_location = file_location
 
     def get_generated_designator(self) -> str:
         return self.__designator
@@ -66,7 +67,11 @@ class GeneratedDesignator:
         self.__wup = GeneratedDesignator.wn_handler.get_wup_sim(self.__reference_action.get_name(), self.__generated_action.get_name())
         self.__glove_cosine_sim = GeneratedDesignator.glove_handler.calculate_cosine(self.get_generated_action_name(), self.get_reference_action_name())
         self.__sensorimotor = get_dist_for_action_combination(self.__reference_action.get_name(), self.__generated_action.get_name())
-        self.__compiles = get_compilation_results(self.__reference_action.get_name(), self.__generated_action.get_name(), self.__model, self.__run)
+        if "gpt" in self.__model.lower():
+            self.__compiles = get_compilation_results(self.__reference_action.get_name(),
+                                                      self.__generated_action.get_name(), self.__model, self.__run)
+        else:
+            self.__compiles = check_readability(self.__file_location)
         self.__lines = self.__designator.count('\n') + 1
 
     def convert_to_dict(self) -> dict:

@@ -32,7 +32,7 @@ class ResultReader:
         file = self.__folder / f'{gen_act.get_name().lower()}_based_on_{ref_act.get_name().lower()}.lisp'
         with open(file, 'r') as txt_file:
             gen_des = txt_file.read()
-        return GeneratedDesignator(ref_act, gen_act, gen_des, self.__model, self.__run)
+        return GeneratedDesignator(ref_act, gen_act, gen_des, self.__model, self.__run, file)
 
     def read_average_results(self) -> pd.DataFrame:
         file = CRAM_GEN_FOLDER / f"average results {self.__model}.csv"
