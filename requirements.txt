@@ -16,3 +16,4 @@ transformers~=4.46.3
 accelerate>=0.26.0
 bitsandbytes~=0.45.0
 tqdm~=4.67.1
+seaborn~=0.13.2
