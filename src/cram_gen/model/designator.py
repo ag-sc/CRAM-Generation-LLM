@@ -41,7 +41,7 @@ class GeneratedDesignator:
         return self.__generated_action.get_name()
 
     def calculate_metrics(self):
-        from src.cram_gen.inout import get_dist_for_action_combination, get_compilation_results
+        from src.cram_gen.inout import get_dist_for_action_combination
 
         ref_designator = self.get_reference_designator()
         gen_designator = self.get_generated_designator()
@@ -67,11 +67,7 @@ class GeneratedDesignator:
         self.__wup = GeneratedDesignator.wn_handler.get_wup_sim(self.__reference_action.get_name(), self.__generated_action.get_name())
         self.__glove_cosine_sim = GeneratedDesignator.glove_handler.calculate_cosine(self.get_generated_action_name(), self.get_reference_action_name())
         self.__sensorimotor = get_dist_for_action_combination(self.__reference_action.get_name(), self.__generated_action.get_name())
-        if "gpt" in self.__model.lower():
-            self.__compiles = get_compilation_results(self.__reference_action.get_name(),
-                                                      self.__generated_action.get_name(), self.__model, self.__run)
-        else:
-            self.__compiles = check_readability(self.__file_location)
+        self.__compiles = check_readability(self.__file_location)
         self.__lines = self.__designator.count('\n') + 1
 
     def convert_to_dict(self) -> dict:
