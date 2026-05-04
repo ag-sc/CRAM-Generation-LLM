@@ -15,7 +15,7 @@ import os
 from src.pycram_gen.models.constants import VERBOSE, TARGET_DETAIL, CRAM_ACTIONS
 from src.pycram_gen.models.enums import ModelType
 from src.pycram_gen.models.exceptions import PrompterException
-from src.pycram_gen.models.utils import get_model_specifics_from_model_name
+from src.pycram_gen.models.utils import get_model_prompter_from_model_name, get_model_type_from_model_name
 
 # argument parser for parsing command line argument which sets the LLM to be used
 parser = argparse.ArgumentParser(description="Convert CRAM designators into PyCRAM " +
@@ -29,7 +29,8 @@ args = parser.parse_args()
 generation_interrupted = False
 
 # get the ModelType enum element & initialise the prompter
-model, prompter = get_model_specifics_from_model_name(args.model)
+model = get_model_type_from_model_name(args.model)
+prompter = get_model_prompter_from_model_name(args.model)
 
 # base path for saving the generated designators for this experiment
 base_path = "data/cram_conversion/"

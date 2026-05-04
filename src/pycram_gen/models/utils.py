@@ -143,7 +143,7 @@ def compute_metrics(reference: str, generated:str) -> Dict[int, float]:
             }
 
 
-def get_model_specifics_from_model_name(model_name: str) -> Tuple[ModelType, Prompter]:
+def get_model_type_from_model_name(model_name: str) -> ModelType:
     """
     Get the element of the ModelType enum whose value corresponds to
     the given model name
@@ -151,11 +151,20 @@ def get_model_specifics_from_model_name(model_name: str) -> Tuple[ModelType, Pro
     :param model_name: Name of the model
     :return: Element of ModelType enum whose value is the model name
     """
-    model_type = [model for model in ModelType if model.value == model_name][0]
+    return [model for model in ModelType if model.value == model_name][0]
+
+
+def get_model_prompter_from_model_name(model_name: str) -> Prompter:
+    """
+    Get the prompter for the given model name
+
+    :param model_name: Name of the model
+    :return: Prompter subclass for the model name
+    """
     if "gpt" in model_name.lower():
         prompter = OpenAIPrompter(model_name)
     elif "llama" in model_name.lower():
         prompter = LlamaPrompter()
     else:
         prompter = GemmaPrompter()
-    return model_type, prompter
+    return prompter

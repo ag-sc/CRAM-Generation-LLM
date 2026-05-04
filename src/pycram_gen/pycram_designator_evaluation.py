@@ -22,7 +22,7 @@ from scipy.stats import spearmanr
 
 from src.pycram_gen.models.constants import VERBOSE, CLOSER_COLUMN_NAME, ACTIONS
 from src.pycram_gen.models.enums import ModelType, ResultColumnPycram, ActionSimilarityColumns
-from src.pycram_gen.models.utils import get_model_specifics_from_model_name
+from src.pycram_gen.models.utils import get_model_type_from_model_name
 
 # argument parser for selecting the model whose results are to be evaluated
 parser = argparse.ArgumentParser(description="Evaluate the generated designators")
@@ -31,7 +31,7 @@ parser.add_argument("-m", "--model", help="LLM to be evaluated", required=True,
 args = parser.parse_args()
 
 # get the ModelType enum element whose value corresponds to the model argument
-model = get_model_specifics_from_model_name(args.model)[0]
+model = get_model_type_from_model_name(args.model)
 
 # output selected model name
 if VERBOSE:

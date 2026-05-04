@@ -17,7 +17,7 @@ import os
 
 from src.pycram_gen.models.constants import VERBOSE
 from src.pycram_gen.models.enums import ModelType
-from src.pycram_gen.models.utils import get_model_specifics_from_model_name, remove_imports, remove_comments, \
+from src.pycram_gen.models.utils import get_model_type_from_model_name, remove_imports, remove_comments, \
     remove_blank_lines
 
 # argument parser for selecting the model whose results are to be processed
@@ -27,7 +27,7 @@ parser.add_argument("-m", "--model", help="LLM to be evaluated", required=True,
 args = parser.parse_args()
 
 # get the ModelType enum element whose value corresponds to the model argument
-model = get_model_specifics_from_model_name(args.model)[0]
+model = get_model_type_from_model_name(args.model)
 
 # get the common import statements
 with open("data/pycram_designators/imports.py", "r") as f:
