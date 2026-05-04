@@ -16,11 +16,11 @@ from src.pycram_gen.models.constants import ACTIONS, SAME_AUTHOR_ACTIONS
 from src.pycram_gen.models.enums import ActionSimilarityColumns
 
 # get the WordNet synsets for the actions
-with open("../../data/action_synsets.json", "r") as f:
+with open("data/action_synsets.json", "r") as f:
     action_synsets = json.load(f)
 
 # get the Sensorimotor Distance results
-sensorimotor_distance = pd.read_csv("../data/sensorimotor_distance1.csv")
+sensorimotor_distance = pd.read_csv("data/sensorimotor_distance_pycram.csv")
 
 # list for saving the computed action similarities
 action_similarities = []
@@ -62,4 +62,4 @@ dataframe_columns = [column.value for column in ActionSimilarityColumns]
 # create and save the result dataframe
 dataframe_action_similarity = pd.DataFrame(action_similarities,
                                            columns=dataframe_columns)
-dataframe_action_similarity.to_csv("data/action_similarity.csv")
+dataframe_action_similarity.to_csv("data/pycram_generation/action_similarity.csv")
