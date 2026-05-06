@@ -28,7 +28,7 @@ prompter = OpenAIPrompter(model.value)
 
 # path to directory for saving generated designators
 path = "data/prompt_engineering/raw/"
-os.makedirs(path)
+os.makedirs(path, exist_ok=True)
 
 # variables for determining the current progress
 if VERBOSE:

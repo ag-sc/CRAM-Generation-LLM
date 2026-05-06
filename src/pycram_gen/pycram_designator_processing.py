@@ -56,8 +56,8 @@ for run in runs:
     path_processed = os.path.join(run_path, "processed")
 
     # create directories for saving the full and processed designators
-    os.makedirs(path_full)
-    os.makedirs(path_processed)
+    os.makedirs(path_full, exist_ok=True)
+    os.makedirs(path_processed, exist_ok=True)
 
     # get the file names of the designators generated in this run
     designators = sorted(os.listdir(path_raw))

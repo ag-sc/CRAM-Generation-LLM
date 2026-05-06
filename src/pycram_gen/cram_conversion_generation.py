@@ -39,7 +39,7 @@ model_path = os.path.join(base_path, model.value.lower())
 
 # create directory for saving results for this model
 path = os.path.join(model_path, "raw")
-os.makedirs(path)
+os.makedirs(path, exist_ok=True)
 
 # get the action descriptions from the json file
 with open("data/action_descriptions.json", "r") as f:

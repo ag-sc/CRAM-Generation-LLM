@@ -60,7 +60,7 @@ else:
 # create directory for saving results of current run
 run_path = os.path.join(model_path, "run_"+str(run))
 path = os.path.join(run_path, "raw")
-os.makedirs(path)
+os.makedirs(path, exist_ok=True)
 
 # get the action descriptions from the json file
 with open("data/action_descriptions.json", "r") as f:
