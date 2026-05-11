@@ -58,34 +58,18 @@ NavigateAction(target_locations: List[Pose], resolver=None) # Navigates the Robo
 class GraspAction(ActionDesignatorDescription):
     @dataclasses.dataclass
     class Action(ActionDesignatorDescription.Action):
+        object_designator: ObjectDesignatorDescription.Object
         arm: str
-        object_desig: Union[ObjectDesignatorDescription.Object, ObjectPart.Object]
 
-        def perform(self) -> Any:
-            if isinstance(self.object_desig, ObjectPart.Object):
-                object_pose = self.object_desig.part_pose
-            else:
-                object_pose = self.object_desig.bullet_world_object.get_pose()
-            lt = LocalTransformer()
-            gripper_name = robot_description.get_tool_frame(self.arm)
-
-            object_pose_in_gripper = lt.transform_pose(object_pose, 
-                                                       BulletWorld.robot.get_link_tf_frame(gripper_name))
-
-            pre_grasp = object_pose_in_gripper.copy()
-            pre_grasp.pose.position.x -= 0.1
-
-            MoveTCPMotion(pre_grasp, self.arm).resolve().perform()
-            MoveGripperMotion("open", self.arm).resolve().perform()
-
-            MoveTCPMotion(object_pose_in_gripper, self.arm, allow_gripper_collision=True).resolve().perform()
-            MoveGripperMotion("close", self.arm, allow_gripper_collision=True).resolve().perform()
-
-        def to_sql(self) -> ORMAction:
-            raise NotImplementedError
-
-        def insert(self, session: sqlalchemy.orm.session.Session, *args, **kwargs) -> ORMAction:
-            raise NotImplementedError
+        @with_tree
+        def perform(self) -> None:
+            ParkArmsAction.Action(Arms.BOTH).perform()
+            pre_grasp_pose = Pose(position=[self.object_designator.position[0] - 0.1, self.object_designator.position[1], self.object_designator.position[2]], orientation=self.object_designator.orientation)
+            MoveTCPMotion.Action(pre_grasp_pose, self.arm).perform()
+            MoveGripperMotion.Action("open", self.arm).perform()
+            MoveTCPMotion.Action(self.object_designator, self.arm).perform()
+            MoveGripperMotion.Action("close", self.arm).perform()
+            ParkArmsAction.Action(Arms.BOTH).perform()
 
     def __init__(self, object_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object, ObjectPart, ObjectPart.Object], arms: List[str], resolver=None):
         super().__init__(resolver)
@@ -93,4 +77,5 @@ class GraspAction(ActionDesignatorDescription):
         self.arms = arms
 
     def ground(self) -> Action:
-        return self.Action(self.arms[0], self.object_description)
+        obj_desig = self.object_description if isinstance(self.object_description, (ObjectDesignatorDescription.Object, ObjectPart.Object)) else self.object_description.resolve()
+        return self.Action(obj_desig, self.arms[0])

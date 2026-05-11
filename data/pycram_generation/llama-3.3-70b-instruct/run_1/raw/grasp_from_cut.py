@@ -1,36 +1,41 @@
 class GraspAction(ActionDesignatorDescription):
     @dataclasses.dataclass
     class Action(ActionDesignatorDescription.Action):
-        object_designator: Union[ObjectDesignatorDescription.Object, ObjectPart.Object]
+        object_designator: ObjectDesignatorDescription.Object
         arm: str
+
+        def __init__(self, object_designator, arm, resolver=None):
+            self.object_designator = object_designator
+            self.arm = arm
 
         @with_tree
         def perform(self) -> None:
-            robot = BulletWorld.robot
             object = self.object_designator.bullet_world_object
             oTm = object.get_pose()
-            mTo = object.local_transformer.transform_to_object_frame(oTm, object)
-            pre_grasp_pose = mTo.copy()
+            object_pose = object.local_transformer.transform_to_object_frame(oTm, object)
+
+            pre_grasp_pose = object_pose.copy()
             pre_grasp_pose.pose.position.x -= 0.1
-            pre_grasp_pose = object.local_transformer.transform_pose(pre_grasp_pose, "map")
+
             MoveTCPMotion(pre_grasp_pose, self.arm).resolve().perform()
-            MoveGripperMotion(motion="open", gripper=self.arm).resolve().perform()
-            MoveTCPMotion(oTm, self.arm).resolve().perform()
-            MoveGripperMotion(motion="close", gripper=self.arm).resolve().perform()
+            MoveGripperMotion('open', self.arm).resolve().perform()
+            MoveTCPMotion(object_pose, self.arm).resolve().perform()
+            MoveGripperMotion('close', self.arm).resolve().perform()
 
-        def to_sql(self) -> Base:
-            return ORMMoveAction(self.arm)
+        def to_sql(self) -> None:
+            return None
 
-        def insert(self, session: sqlalchemy.orm.session.Session, **kwargs) -> Base:
-            action = super().insert(session)
-            session.add(action)
-            session.commit()
-            return action
+        def insert(self, session, **kwargs):
+            return None
 
-    def __init__(self, object_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object, ObjectPart, ObjectPart.Object], arms: List[str], resolver=None):
+    def __init__(self, object_description, arms, resolver=None):
         super(GraspAction, self).__init__(resolver)
         self.object_description = object_description
         self.arms = arms
 
+    def __iter__(self):
+        for object_, arm in itertools.product(iter(self.object_description), self.arms):
+            yield self.Action(object_, arm)
+
     def ground(self) -> Action:
-        return self.Action(self.object_description, self.arms[0])
+        return next(iter(self))

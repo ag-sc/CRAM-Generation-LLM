@@ -21,38 +21,29 @@ class WipeAction(ActionDesignatorDescription):
             NavigateAction([pickup_pose.pose]).resolve().perform()
             PickUpAction.Action(self.object_cloth_designator, self.arm, "front").perform()
             ParkArmsAction.Action(Arms.BOTH).perform()
-            try:
-                place_loc = CostmapLocation(target=self.wipe_location, reachable_for=robot_desig.resolve(), reachable_arm=self.arm).resolve()
-            except StopIteration:
-                raise ReachabilityFailure(f"No location found from where the robot can reach the target location: {self.wipe_location}")
-            NavigateAction([place_loc.pose]).resolve().perform()
-            MoveTCPMotion(Pose(position=[self.wipe_location.position.x, self.wipe_location.position.y, self.wipe_location.position.z + 0.1], 
-                             orientation=self.wipe_location.orientation), self.arm).resolve().perform()
-            for i in range(int(self.length // 0.1)):
+            navigate_loc = CostmapLocation(target=self.wipe_location, reachable_for=robot_desig.resolve(), reachable_arm=self.arm).resolve()
+            NavigateAction([navigate_loc.pose]).resolve().perform()
+            num_strips = int(self.length / 0.1)
+            strip_poses = []
+            for i in range(num_strips):
+                strip_pose = Pose(position=[self.wipe_location.position[0] + (i * 0.1), self.wipe_location.position[1], self.wipe_location.position[2]], 
+                               orientation=self.wipe_location.orientation)
                 if i % 2 == 0:
-                    MoveTCPMotion(Pose(position=[self.wipe_location.position.x + i * 0.1, self.wipe_location.position.y - self.width / 2, 
-                                         self.wipe_location.position.z], 
-                                     orientation=self.wipe_location.orientation), self.arm).resolve().perform()
+                    strip_pose.position[1] -= self.width / 2
                 else:
-                    MoveTCPMotion(Pose(position=[self.wipe_location.position.x + i * 0.1, self.wipe_location.position.y + self.width / 2, 
-                                         self.wipe_location.position.z], 
-                                     orientation=self.wipe_location.orientation), self.arm).resolve().perform()
-            MoveTCPMotion(Pose(position=[self.wipe_location.position.x, self.wipe_location.position.y, self.wipe_location.position.z + 0.1], 
-                             orientation=self.wipe_location.orientation), self.arm).resolve().perform()
-            PlaceAction.Action(self.object_cloth_designator, self.arm, self.wipe_location).perform()
+                    strip_pose.position[1] += self.width / 2
+                strip_poses.append(strip_pose)
+            for pose in strip_poses:
+                MoveTCPMotion(pose, self.arm).perform()
+            PlaceAction.Action(self.object_cloth_designator, self.arm, pickup_pose.pose).perform()
             ParkArmsAction.Action(Arms.BOTH).perform()
-        def to_sql(self) -> Base:
-            raise NotImplementedError()
-        def insert(self, session: sqlalchemy.orm.session.Session, *args, **kwargs) -> Base:
-            raise NotImplementedError()
-    def __init__(self, object_cloth_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], 
-                 wipe_locations: List[Pose], lengths: List[float], widths: List[float], arms: List[str], resolver=None):
+    def __init__(self, object_cloth_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], wipe_locations: List[Pose], lengths: List[float], widths: List[float], arms: List[str], resolver=None):
         super().__init__(resolver)
-        self.object_cloth_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object] = object_cloth_description
-        self.wipe_locations: List[Pose] = wipe_locations
-        self.lengths: List[float] = lengths
-        self.widths: List[float] = widths
-        self.arms: List[str] = arms
+        self.object_cloth_description = object_cloth_description
+        self.wipe_locations = wipe_locations
+        self.lengths = lengths
+        self.widths = widths
+        self.arms = arms
     def ground(self) -> Action:
         obj_desig = self.object_cloth_description if isinstance(self.object_cloth_description, ObjectDesignatorDescription.Object) else self.object_cloth_description.resolve()
         return self.Action(obj_desig, self.wipe_locations[0], self.lengths[0], self.widths[0], self.arms[0])

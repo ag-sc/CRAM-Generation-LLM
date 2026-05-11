@@ -1,31 +1,21 @@
 class GraspAction(ActionDesignatorDescription):
     @dataclasses.dataclass
     class Action(ActionDesignatorDescription.Action):
-        object_designator: Union[ObjectDesignatorDescription.Object, ObjectPart.Object]
+        object_designator: ObjectDesignatorDescription.Object
         arm: str
-        @with_tree
         def perform(self) -> None:
-            robot = BulletWorld.robot
             object = self.object_designator.bullet_world_object
-            oTm = object.get_pose()
-            mTo = object.local_transformer.transform_to_object_frame(oTm, object)
-            pre_grasp_pose = mTo.copy()
+            obj_pose = object.get_pose()
+            pre_grasp_pose = obj_pose.copy()
             pre_grasp_pose.pose.position.x -= 0.1
-            pre_grasp_pose = object.local_transformer.transform_pose(pre_grasp_pose, "map")
             MoveTCPMotion(pre_grasp_pose, self.arm).resolve().perform()
-            MoveGripperMotion(motion="open", gripper=self.arm).resolve().perform()
-            MoveTCPMotion(oTm, self.arm).resolve().perform()
-            MoveGripperMotion(motion="close", gripper=self.arm).resolve().perform()
-        def to_sql(self) -> Base:
-            return ORMGraspAction(self.arm)
-        def insert(self, session: sqlalchemy.orm.session.Session, **kwargs) -> ORMGraspAction:
-            action = super().insert(session)
-            session.add(action)
-            session.commit()
-            return action
+            MoveGripperMotion('open', self.arm).resolve().perform()
+            MoveTCPMotion(obj_pose, self.arm).resolve().perform()
+            MoveGripperMotion('close', self.arm).resolve().perform()
     def __init__(self, object_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object, ObjectPart, ObjectPart.Object], arms: List[str], resolver=None):
-        super(GraspAction, self).__init__(resolver)
+        super().__init__(resolver)
         self.object_description = object_description
         self.arms = arms
     def ground(self) -> Action:
-        return self.Action(self.object_description, self.arms[0])
+        object_desig = self.object_description if isinstance(self.object_description, (ObjectDesignatorDescription.Object, ObjectPart.Object)) else self.object_description.resolve()
+        return self.Action(object_desig, self.arms[0])

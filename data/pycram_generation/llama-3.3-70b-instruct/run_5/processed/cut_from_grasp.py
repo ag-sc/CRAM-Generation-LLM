@@ -1,50 +1,45 @@
 class CutAction(ActionDesignatorDescription):
     @dataclasses.dataclass
     class Action(ActionDesignatorDescription.Action):
-        object_designator: ObjectDesignatorDescription.Object
+        object_desig: Union[ObjectDesignatorDescription.Object, ObjectPart.Object]
         arm: str
         grasp: str
         technique: str
         slice_thickness: float
         @with_tree
         def perform(self) -> None:
-            robot = BulletWorld.robot
-            object = self.object_designator.bullet_world_object
-            tool_frame = robot_description.get_tool_frame(self.arm)
-            grasp_orientation = robot_description.grasps.get_orientation_for_grasp(self.grasp)
-            oTm = object.get_pose()
-            mTo = object.local_transformer.transform_to_object_frame(oTm, object)
-            adjusted_pose = self.object_designator.special_knowledge_adjustment_pose(self.grasp, mTo)
-            adjusted_oTm = object.local_transformer.transform_pose(adjusted_pose, "map")
-            ori = multiply_quaternions([adjusted_oTm.orientation.x, adjusted_oTm.orientation.y,
-                                        adjusted_oTm.orientation.z, adjusted_oTm.orientation.w],
-                                       grasp_orientation)
-            adjusted_oTm.orientation.x = ori[0]
-            adjusted_oTm.orientation.y = ori[1]
-            adjusted_oTm.orientation.z = ori[2]
-            adjusted_oTm.orientation.w = ori[3]
+            if isinstance(self.object_desig, ObjectPart.Object):
+                object_pose = self.object_desig.part_pose
+            else:
+                object_pose = self.object_desig.bullet_world_object.get_pose()
+            lt = LocalTransformer()
+            gripper_name = robot_description.get_tool_frame(self.arm)
+            object_pose_in_gripper = lt.transform_pose(object_pose, BulletWorld.robot.get_link_tf_frame(gripper_name))
             if self.technique == "halving":
-                cutting_pose = adjusted_oTm
+                cut_pose = object_pose_in_gripper.copy()
+                cut_pose.pose.position.y = 0
+                MoveTCPMotion(cut_pose, self.arm).resolve().perform()
+                MoveGripperMotion("close", self.arm, allow_gripper_collision=True).resolve().perform()
+                MoveTCPMotion(Pose(position=[cut_pose.pose.position.x, cut_pose.pose.position.y - self.slice_thickness / 2, cut_pose.pose.position.z], orientation=cut_pose.pose.orientation), self.arm, allow_gripper_collision=True).resolve().perform()
+                MoveGripperMotion("open", self.arm, allow_gripper_collision=True).resolve().perform()
             elif self.technique == "slicing":
-                cutting_pose = adjusted_oTm
-                cutting_pose.pose.position.x -= self.slice_thickness / 2
-            MoveTCPMotion(cutting_pose, self.arm).resolve().perform()
-            MoveGripperMotion("close", self.arm).resolve().perform()
-        def to_sql(self) -> Base:
-            return ORMCutAction(self.arm, self.grasp, self.technique, self.slice_thickness)
-        def insert(self, session: sqlalchemy.orm.session.Session, *args, **kwargs) -> Base:
-            action = super().insert(session)
-            session.add(action)
-            session.commit()
-            return action
-    def __init__(self, object_designator_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], 
-                 arms: List[str], grasps: List[str], techniques: List[str], slice_thicknesses: List[float] = [0.05], resolver=None):
+                cut_poses = []
+                for i in range(int(object_pose_in_gripper.pose.position.y / self.slice_thickness)):
+                    cut_pose = object_pose_in_gripper.copy()
+                    cut_pose.pose.position.y = i * self.slice_thickness
+                    cut_poses.append(cut_pose)
+                for cut_pose in cut_poses:
+                    MoveTCPMotion(cut_pose, self.arm).resolve().perform()
+                    MoveGripperMotion("close", self.arm, allow_gripper_collision=True).resolve().perform()
+                    MoveTCPMotion(Pose(position=[cut_pose.pose.position.x, cut_pose.pose.position.y - self.slice_thickness / 2, cut_pose.pose.position.z], orientation=cut_pose.pose.orientation), self.arm, allow_gripper_collision=True).resolve().perform()
+                    MoveGripperMotion("open", self.arm, allow_gripper_collision=True).resolve().perform()
+    def __init__(self, object_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object, ObjectPart, ObjectPart.Object], arms: List[str], grasps: List[str], techniques: List[str], slice_thicknesses: List[float] = [0.05], resolver=None):
         super().__init__(resolver)
-        self.object_designator_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object] = object_designator_description
-        self.arms: List[str] = arms
-        self.grasps: List[str] = grasps
-        self.techniques: List[str] = techniques
-        self.slice_thicknesses: List[float] = slice_thicknesses
+        self.object_description = object_description
+        self.arms = arms
+        self.grasps = grasps
+        self.techniques = techniques
+        self.slice_thicknesses = slice_thicknesses
     def ground(self) -> Action:
-        obj_desig = self.object_designator_description if isinstance(self.object_designator_description, ObjectDesignatorDescription.Object) else self.object_designator_description.resolve()
-        return self.Action(obj_desig, self.arms[0], self.grasps[0], self.techniques[0], self.slice_thicknesses[0])
+        object_desig = self.object_description if (isinstance(self.object_description, ObjectDesignatorDescription.Object) or isinstance(self.object_description, ObjectPart.Object)) else self.object_description.resolve()
+        return self.Action(object_desig, self.arms[0], self.grasps[0], self.techniques[0], self.slice_thicknesses[0])

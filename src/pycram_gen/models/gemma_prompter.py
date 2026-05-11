@@ -9,13 +9,14 @@ from .prompts import *
 
 
 class GemmaPrompter(Prompter):
-    def __init__(self, max_new_tokens=2500):
+    def __init__(self, max_new_tokens=512):
         super().__init__(ModelType.GEMMA.value)
         self.tokenizer = transformers.AutoTokenizer.from_pretrained(f'google/{self._model_name}')
         self.model = transformers.AutoModelForCausalLM.from_pretrained(
             f'google/{self._model_name}',
             device_map="auto",
-            torch_dtype=torch.bfloat16
+            torch_dtype=torch.bfloat16,
+            attn_implementation="sdpa"
         )
         self.max_new_tokens = max_new_tokens
 
@@ -26,14 +27,19 @@ class GemmaPrompter(Prompter):
             add_special_tokens=False,
             return_tensors="pt",
             truncation=True,
-            max_length=4096
+            max_length=3072
         ).to(self.model.device)
-        outputs = self.model.generate(
-            input_ids=inputs,
-            max_new_tokens=self.max_new_tokens,
-            do_sample=False
-        )
-        generated = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
+        with torch.inference_mode():
+            outputs = self.model.generate(
+                input_ids=inputs,
+                max_new_tokens=self.max_new_tokens,
+                do_sample=False,
+                use_cache=False,
+            )
+            generated = self.tokenizer.decode(
+                outputs[0][inputs.shape[-1]:],
+                skip_special_tokens=True
+            )
         match = re.search(r"<start_of_turn>model(.*?)<end_of_turn>", generated, re.DOTALL)
         result = match.group(1).strip() if match else None
         return self.extract_designator(str(result))
