@@ -54,9 +54,8 @@ class GemmaPrompter(Prompter):
                      "content": f"{sys_prompt_pycram.format(reference_name=reference_name, reference_description=reference_description, reference_designator=reference_designator)}\n{usr_prompt_pycram.format(target_name=target_name, target_description=target_description, target_constructor=target_constructor)}"}]
         return self._prompt(messages)
 
-    def translate_cram_designatoraction_name(self, action_name: str, cram_description: str, cram_designator: str,
-                                             pycram_basic_structure: str, pycram_description: str,
-                                             pycram_constructor: str) -> str:
+    def translate_cram_designator(self, action_name: str, cram_description: str, cram_designator: str,
+                                  pycram_basic_structure: str, pycram_description: str, pycram_constructor: str) -> str:
         messages = [{"role": "user",
                      "content": f"{sys_prompt_translate.format(action_name=action_name, cram_description=cram_description, cram_designator=cram_designator, pycram_basic_structure=pycram_basic_structure)}\n{usr_prompt_translate.format(action_name=action_name, pycram_description=pycram_description, pycram_constructor=pycram_constructor)}"}]
         return self._prompt(messages)
