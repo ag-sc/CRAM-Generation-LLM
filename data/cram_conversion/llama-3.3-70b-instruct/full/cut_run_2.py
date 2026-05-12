@@ -84,20 +84,20 @@ class CutAction(ActionDesignatorDescription):
             if self.technique == 'halving':
                 cut_pose = Pose(position=[object_pose.position[0], object_pose.position[1], object_pose.position[2] + self.slice_thickness/2], 
                               orientation=object_pose.orientation, frame='map')
-                MoveTCPMotion(target=cut_pose, arm=self.arm).resolve().perform()
-                MoveGripperMotion(motion='close', gripper=self.grasp).resolve().perform()
+                MoveTCPMotion(target=cut_pose, arm=self.arm, resolver=None).resolve().perform()
+                MoveGripperMotion(motion='close', gripper=self.grasp, resolver=None).resolve().perform()
                 MoveTCPMotion(target=Pose(position=[object_pose.position[0], object_pose.position[1], object_pose.position[2] - self.slice_thickness/2], 
-                              orientation=object_pose.orientation, frame='map'), arm=self.arm).resolve().perform()
-                MoveGripperMotion(motion='open', gripper=self.grasp).resolve().perform()
+                              orientation=object_pose.orientation, frame='map'), arm=self.arm, resolver=None).resolve().perform()
+                MoveGripperMotion(motion='open', gripper=self.grasp, resolver=None).resolve().perform()
             elif self.technique =='slicing':
-                for i in range(int((object_pose.position[2] - self.slice_thickness) / self.slice_thickness)):
-                    cut_pose = Pose(position=[object_pose.position[0], object_pose.position[1], object_pose.position[2] - i * self.slice_thickness], 
+                for i in range(int((object_pose.position[1] - (-object_pose.position[1])) / self.slice_thickness)):
+                    cut_pose = Pose(position=[object_pose.position[0], object_pose.position[1] - i * self.slice_thickness, object_pose.position[2]], 
                                   orientation=object_pose.orientation, frame='map')
-                    MoveTCPMotion(target=cut_pose, arm=self.arm).resolve().perform()
-                    MoveGripperMotion(motion='close', gripper=self.grasp).resolve().perform()
-                    MoveTCPMotion(target=Pose(position=[object_pose.position[0], object_pose.position[1], object_pose.position[2] - (i+1) * self.slice_thickness], 
-                                  orientation=object_pose.orientation, frame='map'), arm=self.arm).resolve().perform()
-                    MoveGripperMotion(motion='open', gripper=self.grasp).resolve().perform()
+                    MoveTCPMotion(target=cut_pose, arm=self.arm, resolver=None).resolve().perform()
+                    MoveGripperMotion(motion='close', gripper=self.grasp, resolver=None).resolve().perform()
+                    MoveTCPMotion(target=Pose(position=[object_pose.position[0], object_pose.position[1] - (i+1) * self.slice_thickness, object_pose.position[2]], 
+                                  orientation=object_pose.orientation, frame='map'), arm=self.arm, resolver=None).resolve().perform()
+                    MoveGripperMotion(motion='open', gripper=self.grasp, resolver=None).resolve().perform()
 
     def __init__(self, object_designator_description: Union[ObjectDesignatorDescription, ObjectDesignatorDescription.Object], 
                  arms: List[str], grasps: List[str], techniques: List[str], slice_thicknesses: List[float] = [0.05], resolver=None):
