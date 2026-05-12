@@ -40,7 +40,7 @@ class GemmaPrompter(Prompter):
                 outputs[0][inputs.shape[-1]:],
                 skip_special_tokens=True
             )
-        match = re.search(r"<start_of_turn>model(.*?)<end_of_turn>", generated, re.DOTALL)
+        match = re.search(r"```(?:python)?\s*(.*?)```", generated, re.DOTALL)
         result = match.group(1).strip() if match else None
         return self.extract_designator(str(result))
 

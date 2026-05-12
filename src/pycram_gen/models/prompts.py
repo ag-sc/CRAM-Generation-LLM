@@ -20,5 +20,5 @@ usr_prompt_pycram = (
 
 usr_prompt_translate = (
     "Take the CRAM designator and convert it into a PyCRAM designator (include an implementation of the perform method) for the same action of \'{action_name}\', where the robot should {pycram_description}. "
-    "Output only the designator with no additional text. Do not include comments in the code. Follow the provided basic structure and use only the imported libraries and designators. Use the following "
+    "Output only the designator with no additional text. Do not include comments in the code. Do not explain yourself or the code. Follow the provided basic structure and use only the imported libraries and designators. Use the following "
     "constructor: {pycram_constructor}")
