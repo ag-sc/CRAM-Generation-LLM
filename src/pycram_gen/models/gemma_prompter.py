@@ -40,13 +40,17 @@ class GemmaPrompter(Prompter):
                 outputs[0][inputs.shape[-1]:],
                 skip_special_tokens=True
             )
-        match = re.search(r"```(?:python)?\s*(.*?)```", generated, re.DOTALL)
-        result = match.group(1).strip() if match else None
-        return self.extract_designator(str(result))
+        return self.extract_designator(generated)
 
     def extract_designator(self, model_answer: str) -> str:
-        designator = model_answer.split("```")[0]
-        return designator
+        if "```python" in model_answer:
+            match = re.search(r"```(?:python)?\s*(.*?)```", model_answer, re.DOTALL)
+            result = match.group(1).strip() if match else model_answer
+        else:
+            start_removed = model_answer.split('"""')[1]
+            back_removed = start_removed.split('```')[0]
+            result = back_removed.strip() if back_removed else model_answer
+        return str(result)
 
     def generate_designator(self, reference_name: str, reference_description: str, reference_designator: str,
                             target_name: str, target_description: str, target_constructor: str) -> str:
