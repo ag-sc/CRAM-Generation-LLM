@@ -43,14 +43,37 @@ class GemmaPrompter(Prompter):
         return self.extract_designator(generated)
 
     def extract_designator(self, model_answer: str) -> str:
-        if "```python" in model_answer:
-            match = re.search(r"```(?:python)?\s*(.*?)```", model_answer, re.DOTALL)
-            result = match.group(1).strip() if match else model_answer
-        else:
-            start_removed = model_answer.split('"""')[1]
-            back_removed = start_removed.split('```')[0]
-            result = back_removed.strip() if back_removed else model_answer
-        return str(result)
+        text = model_answer.strip()
+
+        # 1. Case: fenced code block (```python ... ```)
+        match = re.search(r"```(?:python)?\s*(.*?)```", text, re.DOTALL)
+        if match:
+            return match.group(1).strip()
+
+        # 2. Case: code starts with triple quotes
+        match = re.search(r'"""\s*(.*)', text, re.DOTALL)
+        if match:
+            candidate = match.group(1)
+
+            # Heuristic: cut off likely explanation sections
+            cut_markers = [
+                "\nHere", "\nExplanation", "\nLisp",
+                "\nThis", "\nThe above", "\nIn summary"
+            ]
+            cut_positions = [candidate.find(m) for m in cut_markers if m in candidate]
+
+            if cut_positions:
+                candidate = candidate[:min([p for p in cut_positions if p != -1])]
+
+            return candidate.strip()
+
+        # 3. Case: no formatting at all => try to extract Python-ish block
+        python_start = re.search(r"(class |def |import |from )", text)
+        if python_start:
+            return text[python_start.start():].strip()
+
+        # Fallback: return raw answer
+        return text
 
     def generate_designator(self, reference_name: str, reference_description: str, reference_designator: str,
                             target_name: str, target_description: str, target_constructor: str) -> str:
