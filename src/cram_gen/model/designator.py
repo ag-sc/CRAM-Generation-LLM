@@ -23,6 +23,7 @@ class GeneratedDesignator:
         self.__glove_cosine_sim = 0.0
         self.__sensorimotor = 0.0
         self.__compiles = 0
+        self.__builds = 0
         self.__lines = 0
         self.__model = model_name
         self.__run = run
@@ -41,7 +42,7 @@ class GeneratedDesignator:
         return self.__generated_action.get_name()
 
     def calculate_metrics(self):
-        from src.cram_gen.inout import get_dist_for_action_combination
+        from src.cram_gen.inout import get_dist_for_action_combination, get_build_rate
 
         ref_designator = self.get_reference_designator()
         gen_designator = self.get_generated_designator()
@@ -68,6 +69,10 @@ class GeneratedDesignator:
         self.__glove_cosine_sim = GeneratedDesignator.glove_handler.calculate_cosine(self.get_generated_action_name(), self.get_reference_action_name())
         self.__sensorimotor = get_dist_for_action_combination(self.__reference_action.get_name(), self.__generated_action.get_name())
         self.__compiles = check_readability(self.__file_location)
+        if "gpt" in self.__model:
+            self.__builds = get_build_rate(self.__reference_action.get_name(), self.__generated_action.get_name(), self.__model, self.__run)
+        else:
+            self.__builds = 0
         self.__lines = self.__designator.count('\n') + 1
 
     def convert_to_dict(self) -> dict:
@@ -87,5 +92,6 @@ class GeneratedDesignator:
             ResultColumnHeaders.cbs: self.__code_bert_score[2].item(),
             ResultColumnHeaders.chrf: self.__chrf_score,
             ResultColumnHeaders.loc: self.__lines,
-            ResultColumnHeaders.comp: self.__compiles
+            ResultColumnHeaders.comp: self.__compiles,
+            ResultColumnHeaders.build: self.__builds
         }

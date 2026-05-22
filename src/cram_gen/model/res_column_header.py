@@ -17,3 +17,4 @@ class ResultColumnHeaders(str, Enum):
     chrf = 'chrF'
     loc = 'LoC'
     comp = 'Compilation'
+    build = 'Build Rate'

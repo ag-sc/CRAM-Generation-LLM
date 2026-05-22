@@ -8,7 +8,7 @@ DESIGNATOR_FOLDER = DATA_FOLDER / "cram_designators"
 
 # Files
 ACTIONS_FILE =  DATA_FOLDER / "cram_actions.csv"
-COMP_FILE = CRAM_GEN_FOLDER / "compilation.csv"
+BUILD_FILE = CRAM_GEN_FOLDER / "build_rate_gpt.csv"
 ALL_RESULTS_FILE = CRAM_GEN_FOLDER / "all_results.csv"
 AVERAGE_RESULTS_FILE = CRAM_GEN_FOLDER / "average_model_results.csv"
 SMD_FILE = DATA_FOLDER / "sensorimotor_distance_cram.csv"

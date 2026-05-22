@@ -17,7 +17,7 @@ gen_metr_ax = {
     'CodeBERTScore': 'CBS',
     'chrF': 'chrF',
     'LoC': 'LoC',
-    'Compilation': 'Comp.',
+    'Compilation': 'Build.',
 }
 sem_met_ax = {
     'WuP': 'WuP',

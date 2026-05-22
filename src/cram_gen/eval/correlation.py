@@ -13,7 +13,7 @@ def calculate_correlations(models: List[str], use_spearman=True):
     df = ResultReader.read_all_results()
     sim_metrics = [ResultColumnHeaders.wup, ResultColumnHeaders.glove, ResultColumnHeaders.smd]
     gen_metrics = [ResultColumnHeaders.bleu, ResultColumnHeaders.r1, ResultColumnHeaders.r2, ResultColumnHeaders.rl,
-                   ResultColumnHeaders.cbs, ResultColumnHeaders.chrf, ResultColumnHeaders.loc]
+                   ResultColumnHeaders.chrf, ResultColumnHeaders.cbs, ResultColumnHeaders.build, ResultColumnHeaders.loc]
 
     res_columns = ["metric"] + [column + suffix for column in gen_metrics for suffix in ["_r", "_p"]]
 
