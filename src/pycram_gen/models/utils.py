@@ -14,6 +14,32 @@ from ..metrics import tokenize, chrf, code_bert_score, code_bleu, crystal_bleu, 
 from ..metrics.code_bleu.parser import remove_comments_and_docstrings
 
 
+def repair_incomplete_python(code: str) -> str:
+    # Balance parentheses
+    diff = code.count("(") - code.count(")")
+    if diff > 0:
+        code += ")" * diff
+
+    # Balance brackets
+    diff = code.count("[") - code.count("]")
+    if diff > 0:
+        code += "]" * diff
+
+    # Balance braces
+    diff = code.count("{") - code.count("}")
+    if diff > 0:
+        code += "}" * diff
+
+    # Close triple quotes
+    if code.count('"""') % 2 == 1:
+        code += '\n"""'
+
+    if code.count("'''") % 2 == 1:
+        code += "\n'''"
+
+    return code
+
+
 def remove_comments(source: str) -> str:
     """
     Remove comments and docstrings from given Python source code.
@@ -24,7 +50,8 @@ def remove_comments(source: str) -> str:
     """
 
     lang = "python"
-    return remove_comments_and_docstrings(source, lang)
+    repaired = repair_incomplete_python(source)
+    return remove_comments_and_docstrings(repaired, lang)
 
 def remove_imports(source: str) -> str:
     """

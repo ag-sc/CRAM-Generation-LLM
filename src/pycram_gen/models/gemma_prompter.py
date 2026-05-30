@@ -40,7 +40,9 @@ class GemmaPrompter(Prompter):
                 outputs[0][inputs.shape[-1]:],
                 skip_special_tokens=True
             )
-        return self.extract_designator(generated)
+        extract = self.extract_designator(generated)
+        #print(f"[INFO] {extract}")
+        return extract
 
     def extract_designator(self, model_answer: str) -> str:
         text = model_answer.strip()
@@ -58,7 +60,8 @@ class GemmaPrompter(Prompter):
             # Heuristic: cut off likely explanation sections
             cut_markers = [
                 "\nHere", "\nExplanation", "\nLisp",
-                "\nThis", "\nThe above", "\nIn summary"
+                "\nThis", "\nThe above", "\nIn summary",
+                "```"
             ]
             cut_positions = [candidate.find(m) for m in cut_markers if m in candidate]
 
