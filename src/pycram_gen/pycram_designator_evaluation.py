@@ -93,9 +93,9 @@ df_gt_as[ActionSimilarityColumns.SAME_AUTHOR.value] = \
     [row[3] for row in action_similarities]
 
 # names of columns in df_gt_as containing the code metric results
-metric_cols = [ResultColumnPycram.CHRF.value, ResultColumnPycram.CODE_BERT_SCORE.value,
-               ResultColumnPycram.CODE_BLEU.value, ResultColumnPycram.CRYSTAL_BLEU.value,
-               ResultColumnPycram.EDIT_DISTANCE.value, ResultColumnPycram.ROUGE_L.value,
+metric_cols = [ResultColumnPycram.ROUGE_L.value, ResultColumnPycram.CHRF.value,
+               ResultColumnPycram.CODE_BERT_SCORE.value, ResultColumnPycram.CODE_BLEU.value,
+               ResultColumnPycram.CRYSTAL_BLEU.value, ResultColumnPycram.EDIT_DISTANCE.value,
                ResultColumnPycram.LOC.value, ResultColumnPycram.COMPILATION_SUCCESS.value,
                ResultColumnPycram.RUN_SUCCESS.value, ResultColumnPycram.SIMULATION.value]
 

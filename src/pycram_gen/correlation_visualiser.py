@@ -84,10 +84,10 @@ def create_and_save_heatmap(p_values, correlations, x_labels, y_labels, model):
                 ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=True, color='lightgray', edgecolor='gray', lw=0.5))
 
     plt.tight_layout()
-    plt.savefig(f'/home/jan-philipp/Git/Projects/ChatGPT-CRAM-Generation/data/pycram_generation/{model.lower()}/correlation_heatmap.png', dpi=300)
+    plt.savefig(f'/home/jan-philipp/Git/Projects/ChatGPT-CRAM-Generation/data/pycram_generation/{model.lower()}/hm_pycram_{model.lower()}.png', dpi=300)
     plt.show()
 
 
 if __name__ == '__main__':
-    models = ["gpt-3.5-turbo-0301", "gpt-3.5-turbo-1106", "gpt-4-0613", "gpt-4-1106-preview"]
+    models = ["gpt-3.5-turbo-0301", "gpt-3.5-turbo-1106", "gpt-4-0613", "gpt-4-1106-preview", "gemma-2-27b-it", "Llama-3.3-70B-Instruct"]
     visualise_correlations(models)

@@ -68,5 +68,5 @@ def create_and_save_heatmap(p_values, correlations, x_labels, y_labels, model):
                 ax.add_patch(plt.Rectangle((j, i), 1, 1, fill=True, color='lightgray', edgecolor='gray', lw=0.5))
 
     plt.tight_layout()
-    plt.savefig(f"{CRAM_GEN_FOLDER}/plots/heatmap_{model}.png", dpi=300)  # save as PNG, high resolution
+    plt.savefig(f"{CRAM_GEN_FOLDER}/plots/hm_cram_{model.lower()}.png", dpi=300)  # save as PNG, high resolution
     plt.show()
